@@ -3,13 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.3.32922.545
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatAppWeb", "ChatAppWeb\ChatAppWeb.csproj", "{24172C13-FE2F-4D1A-892C-58F6C66A5588}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChatAppWeb", "ChatAppWeb\ChatAppWeb.csproj", "{24172C13-FE2F-4D1A-892C-58F6C66A5588}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatAppMobile", "ChatAppMobile\ChatAppMobile.csproj", "{6801B953-F077-466E-824A-132392F3DD68}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChatAppMobile", "ChatAppMobile\ChatAppMobile.csproj", "{6801B953-F077-466E-824A-132392F3DD68}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatApp.API", "ChatAppAPI\ChatApp.API.csproj", "{E10AE813-01EE-48F1-8E74-F43CA8216AA3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChatApp.API", "ChatAppAPI\ChatApp.API.csproj", "{E10AE813-01EE-48F1-8E74-F43CA8216AA3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatApp.DataAccess", "ChatApp.DataAccess\ChatApp.DataAccess.csproj", "{C5F3B07D-1B7B-4C32-878B-8956E0D91FA4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChatApp.DataAccess", "ChatApp.DataAccess\ChatApp.DataAccess.csproj", "{C5F3B07D-1B7B-4C32-878B-8956E0D91FA4}"
+EndProject
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "ChatAppDb", "ChatAppDb\ChatAppDb.sqlproj", "{059B94BC-9A1C-4E14-8B8F-40A6120AA8E3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,6 +37,12 @@ Global
 		{C5F3B07D-1B7B-4C32-878B-8956E0D91FA4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C5F3B07D-1B7B-4C32-878B-8956E0D91FA4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C5F3B07D-1B7B-4C32-878B-8956E0D91FA4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{059B94BC-9A1C-4E14-8B8F-40A6120AA8E3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{059B94BC-9A1C-4E14-8B8F-40A6120AA8E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{059B94BC-9A1C-4E14-8B8F-40A6120AA8E3}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{059B94BC-9A1C-4E14-8B8F-40A6120AA8E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{059B94BC-9A1C-4E14-8B8F-40A6120AA8E3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{059B94BC-9A1C-4E14-8B8F-40A6120AA8E3}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
