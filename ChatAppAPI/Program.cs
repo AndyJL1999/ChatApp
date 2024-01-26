@@ -1,6 +1,7 @@
 using ChatApp.API.Data;
 using ChatApp.API.Data.Repositories;
 using ChatApp.API.Interfaces;
+using ChatApp.DataAccess.DataAccess;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -20,6 +21,8 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddSingleton<ISqlDataAccess, SqlDataAccess>();
 
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 
