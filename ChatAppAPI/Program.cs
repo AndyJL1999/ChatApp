@@ -23,8 +23,9 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddSingleton<ISqlDataAccess, SqlDataAccess>();
-
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
+
+builder.Services.AddSignalR();
 
 var app = builder.Build();
 
