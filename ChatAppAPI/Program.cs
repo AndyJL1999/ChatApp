@@ -1,6 +1,7 @@
 using ChatApp.API.Data;
 using ChatApp.API.Data.Repositories;
 using ChatApp.API.Interfaces;
+using ChatApp.API.SignalR;
 using ChatApp.DataAccess.DataAccess;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -25,6 +26,17 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<ISqlDataAccess, SqlDataAccess>();
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("CorsPolicy",
+        builder => builder
+        //.AllowAnyOrigin()
+        .AllowAnyMethod()
+        .AllowAnyHeader()
+        .AllowCredentials()
+        .SetIsOriginAllowed((hosts) => true));
+});
+
 builder.Services.AddSignalR();
 
 var app = builder.Build();
@@ -39,7 +51,9 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseCors("CorsPolicy");
 
 app.MapControllers();
+app.MapHub<ChatHub>("/chatHub");
 
 app.Run();
