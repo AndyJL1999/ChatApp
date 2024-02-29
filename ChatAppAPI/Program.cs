@@ -2,7 +2,9 @@ using ChatApp.API.Data;
 using ChatApp.API.Data.Repositories;
 using ChatApp.API.Interfaces;
 using ChatApp.API.SignalR;
+using ChatApp.DataAccess.Data;
 using ChatApp.DataAccess.DataAccess;
+using ChatApp.DataAccess.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -24,7 +26,9 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddSingleton<ISqlDataAccess, SqlDataAccess>();
+builder.Services.AddSingleton<IChatData, ChatData>();
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
+builder.Services.AddScoped<IChatRepository, ChatRepository>();
 
 builder.Services.AddCors(options =>
 {
