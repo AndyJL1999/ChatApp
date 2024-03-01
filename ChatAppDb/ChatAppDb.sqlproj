@@ -60,6 +60,8 @@
     <Folder Include="dbo\Tables" />
     <Folder Include="dbo\StoredProcedures" />
     <Folder Include="dbo\StoredProcedures\Chat_Procedures" />
+    <Folder Include="dbo\StoredProcedures\UserChat_Procedures" />
+    <Folder Include="dbo\StoredProcedures\Message_Procedures" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="dbo\Tables\Chat.sql" />
@@ -76,5 +78,7 @@
     <Build Include="dbo\Tables\UserChat.sql" />
     <Build Include="dbo\Tables\UserGroup.sql" />
     <Build Include="dbo\StoredProcedures\Chat_Procedures\spChat_Upsert.sql" />
+    <Build Include="dbo\StoredProcedures\UserChat_Procedures\spUserChat_Insert.sql" />
+    <Build Include="dbo\StoredProcedures\Message_Procedures\spMessage_Insert.sql" />
   </ItemGroup>
 </Project>

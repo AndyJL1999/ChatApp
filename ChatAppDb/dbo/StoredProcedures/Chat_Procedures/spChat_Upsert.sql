@@ -3,15 +3,15 @@
 	@Name nvarchar(256)
 AS
 
-if((select 1 from dbo.[chat] where Id = @Id) = 1)
+if((select 1 from dbo.[Chat] where Id = @Id) = 1)
 begin
-	update dbo.[chat]
+	update dbo.[Chat]
 	set Name = @Name
 	where Id = @Id;
 end
 else
 begin
-	insert into dbo.[chat](Id, Name)
+	insert into dbo.[Chat](Id, Name)
 	values(@Id, @Name)
 end
 
