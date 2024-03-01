@@ -1,5 +1,6 @@
 ﻿using ChatApp.API.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace ChatApp.API.Controllers
 {
@@ -22,6 +23,38 @@ namespace ChatApp.API.Controllers
                 await _chatRepo.UpsertChat(id, name);
             }
             catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+            return Ok();
+        }
+
+        [HttpPost("CreateUserChat")]
+        public async Task<IActionResult> CreateUserChat(string userId, string chatId)
+        {
+            try
+            {
+                await _chatRepo.InsertUserChat(userId, chatId);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+            return Ok();
+        }
+
+        [HttpPost("CreateMessage")]
+        public async Task<IActionResult> CreateMessage(string content)
+        {
+            try
+            {
+                var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+                await _chatRepo.InsertMessage(userId, content);
+            }
+            catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }

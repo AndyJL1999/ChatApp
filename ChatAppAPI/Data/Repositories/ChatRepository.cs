@@ -21,5 +21,19 @@ namespace ChatApp.API.Data.Repositories
 
             await _chatData.UpsertChat(id, name);
         }
+
+        public async Task InsertUserChat(string userId, string chatId)
+        {
+            string id = Guid.NewGuid().ToString();
+
+            await _chatData.InsertUserChat(id, userId, chatId);
+        }
+
+        public async Task InsertMessage(string userId, string content)
+        {
+            string id = Guid.NewGuid().ToString();
+
+            await _chatData.InsertMessage(id, userId, null, null, content, null, null, null);
+        }
     }
 }
