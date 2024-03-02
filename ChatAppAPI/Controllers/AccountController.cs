@@ -1,5 +1,6 @@
 ﻿using ChatApp.API.Interfaces;
 using ChatApp.DataAccess.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -18,34 +19,50 @@ namespace ChatApp.API.Controllers
             _accountRepo = accountRepo;
         }
 
-        [HttpGet]
+        [HttpGet("SignIn")]
         public async Task<IActionResult> SignIn(string email, string password)
         {
             var result = await _accountRepo.SignIn(email, password);
 
             if (result.Succeeded)
             {
-                return Ok();
+                return Ok("You have sign in");
             }
 
-            return BadRequest();
+            return BadRequest("Failed to sign in");
             
         }
 
-        [HttpPost]
+        [HttpPost("Register")]
         public async Task<IActionResult> Register(string name, string email, string password)
         {
             var result = await _accountRepo.Register(name, email, password);
 
             if (result.Succeeded)
             {
-                return Ok();
+                return Ok("You have been registered");
             }
             else
             {
-                return BadRequest();
+                return BadRequest("Something went wrong");
             }
             
+        }
+
+        [Authorize]
+        [HttpPost("LogOut")]
+        public async Task<IActionResult> LogOut()
+        {
+            try
+            {
+                await _accountRepo.SignOut();
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+            return Ok("Successfully signed out");
         }
 
     }

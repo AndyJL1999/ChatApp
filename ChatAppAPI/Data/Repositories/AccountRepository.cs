@@ -38,6 +38,11 @@ namespace ChatApp.API.Data.Repositories
             return await _signInManager.PasswordSignInAsync(email, password, false, false);
         }
 
+        public async Task SignOut()
+        {
+            await _signInManager.SignOutAsync();
+        }
+
         private AppUser CreateUser()
         {
             try

@@ -6,5 +6,6 @@ namespace ChatApp.API.Interfaces
     {
         Task<SignInResult> SignIn(string email, string password);
         Task<IdentityResult> Register(string name, string email, string password);
+        Task SignOut();
     }
 }
