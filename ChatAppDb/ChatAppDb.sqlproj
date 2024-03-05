@@ -80,5 +80,6 @@
     <Build Include="dbo\StoredProcedures\Chat_Procedures\spChat_Upsert.sql" />
     <Build Include="dbo\StoredProcedures\UserChat_Procedures\spUserChat_Insert.sql" />
     <Build Include="dbo\StoredProcedures\Message_Procedures\spMessage_Insert.sql" />
+    <Build Include="dbo\StoredProcedures\Message_Procedures\spMessage_Delete.sql" />
   </ItemGroup>
 </Project>
