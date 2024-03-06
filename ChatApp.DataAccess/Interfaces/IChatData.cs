@@ -12,5 +12,6 @@ namespace ChatApp.DataAccess.Interfaces
         Task InsertUserChat(string id, string userId, string chatId);
         Task InsertMessage(string id, string userId, string? groupId, string? chatId, string content,
             DateTime? sentAt, DateTime? deliveredAt, DateTime? seenAt);
+        Task DeleteMessage(string id);
     }
 }

@@ -28,6 +28,9 @@ namespace ChatApp.DataAccess.Data
             _db.SaveData("spMessage_Insert", 
                 new { Id = id, UserID = userId, GroupId = groupId, ChatId = chatId, Content = content, 
                 SentAt = sentAt, DeliveredAt = deliveredAt, SeenAt = seenAt });
+
+        public Task DeleteMessage(string id) =>
+            _db.SaveData("spMessage_Delete", new { Id = id });
         
     }
 }
