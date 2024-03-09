@@ -1,0 +1,57 @@
+﻿@model UserVM
+
+<div class="card shadow border-0 mt-4">
+    <div class="card-header bg-secondary bg-gradient ml-0 py-4">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h2 class="py-2 text-white">Register</h2>
+            </div>
+        </div>
+    </div>
+    <div class="card-body p-4">
+        <div class="row pt-3">
+            <div class="col-md-12">
+                <form class="row" method="post">
+                    <h3 class="border-bottom pb-3 mb-4 text-secondary text-center">Create a new account.</h3>
+
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-floating mb-3 col-md-12">
+                        <input asp-for="AppUser.Email" class="form-control" autocomplete="username" aria-required="true" />
+                        <label asp-for="AppUser.Email" class="ms-2 text-muted">Email</label>
+                        <span asp-validation-for="AppUser.Email" class="text-danger"></span>
+                    </div>
+                    <div class="form-floating mb-3 col-md-12">
+                        <input asp-for="AppUser.PhoneNumber" class="form-control" placeholder="" />
+                        <label asp-for="AppUser.PhoneNumber" class="ms-2 text-muted">Phone Number</label>
+                        <span asp-validation-for="AppUser.PhoneNumber" class="text-danger"></span>
+                    </div>
+                    <div class="form-floating mb-3 col-md-6">
+                        <input asp-for="Password" class="form-control" autocomplete="new-password" aria-required="true" />
+                        <label asp-for="Password" class="ms-2 text-muted">Password</label>
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                    </div>
+                    <div class="form-floating mb-3 col-md-6">
+                        <input asp-for="ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" />
+                        <label asp-for="ConfirmPassword" class="ms-2 text-muted">Confirm Password</label>
+                        <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                    </div>
+                    <div class="form-floating mb-3 col-md-6">
+                        <input asp-for="AppUser.Name" class="form-control" placeholder="" />
+                        <label asp-for="AppUser.Name" class="ms-2 text-muted">Street Address</label>
+                        <span asp-validation-for="AppUser.Name" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-12">
+                        <button type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
+                    </div>
+                    <div class="d-flex justify-content-between pt-2">
+                        <p>
+                            <a asp-area="UserAccount" asp-controller="UserAccount" asp-action="Login">Already have an account? Sign In.</a>
+                        </p>
+                    </div>
+                </form>
+            </div>
+            
+        </div>
+    </div>
+</div>
