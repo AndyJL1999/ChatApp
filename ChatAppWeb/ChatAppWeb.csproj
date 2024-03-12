@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ChatApp.DataAccess\ChatApp.DataAccess.csproj" />
+    <ProjectReference Include="..\ChatApp.UI_Library\ChatApp.UI_Library.csproj" />
   </ItemGroup>
 
 </Project>

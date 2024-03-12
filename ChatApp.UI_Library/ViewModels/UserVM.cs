@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
-namespace ChatApp.DataAccess.ViewModels
+namespace ChatApp.UI_Library.ViewModels
 {
     public class UserVM
     {
