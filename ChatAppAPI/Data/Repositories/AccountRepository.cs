@@ -21,12 +21,13 @@ namespace ChatApp.API.Data.Repositories
             _emailStore = GetEmailStore();
         }
 
-        public async Task<IdentityResult> Register(string name, string email, string password)
+        public async Task<IdentityResult> Register(string name, string email, string password, string phoneNumber)
         {
             var user = CreateUser();
 
             await _userStore.SetUserNameAsync(user, email, CancellationToken.None);
             await _emailStore.SetEmailAsync(user, email, CancellationToken.None);
+            await _userManager.SetPhoneNumberAsync(user, phoneNumber);
 
             user.Name = name;
 

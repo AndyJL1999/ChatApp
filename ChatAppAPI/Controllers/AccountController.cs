@@ -1,4 +1,5 @@
-﻿using ChatApp.API.Interfaces;
+﻿using ChatApp.API.DTOs;
+using ChatApp.API.Interfaces;
 using ChatApp.DataAccess.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -19,14 +20,14 @@ namespace ChatApp.API.Controllers
             _accountRepo = accountRepo;
         }
 
-        [HttpGet("SignIn")]
-        public async Task<IActionResult> SignIn(string email, string password)
+        [HttpPost("SignIn")]
+        public async Task<IActionResult> SignIn(LoginDTO login)
         {
-            var result = await _accountRepo.SignIn(email, password);
+            var result = await _accountRepo.SignIn(login.Email, login.Password);
 
             if (result.Succeeded)
             {
-                return Ok("You have sign in");
+                return Ok("You have signed in");
             }
 
             return BadRequest("Failed to sign in");
@@ -34,9 +35,9 @@ namespace ChatApp.API.Controllers
         }
 
         [HttpPost("Register")]
-        public async Task<IActionResult> Register(string name, string email, string password)
+        public async Task<IActionResult> Register(RegisterDTO register)
         {
-            var result = await _accountRepo.Register(name, email, password);
+            var result = await _accountRepo.Register(register.Name, register.Email, register.Password, register.PhoneNumber);
 
             if (result.Succeeded)
             {
