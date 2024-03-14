@@ -1,4 +1,4 @@
-﻿@model UserVM
+﻿@model RegisterModel
 
 <div class="card shadow border-0 mt-4">
     <div class="card-header bg-secondary bg-gradient ml-0 py-4">
@@ -16,14 +16,14 @@
 
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <div class="form-floating mb-3 col-md-12">
-                        <input asp-for="AppUser.Email" class="form-control" autocomplete="username" aria-required="true" />
-                        <label asp-for="AppUser.Email" class="ms-2 text-muted">Email</label>
-                        <span asp-validation-for="AppUser.Email" class="text-danger"></span>
+                        <input asp-for="Email" class="form-control" autocomplete="username" aria-required="true" />
+                        <label asp-for="Email" class="ms-2 text-muted">Email</label>
+                        <span asp-validation-for="Email" class="text-danger"></span>
                     </div>
                     <div class="form-floating mb-3 col-md-12">
-                        <input asp-for="AppUser.PhoneNumber" class="form-control" placeholder="" />
-                        <label asp-for="AppUser.PhoneNumber" class="ms-2 text-muted">Phone Number</label>
-                        <span asp-validation-for="AppUser.PhoneNumber" class="text-danger"></span>
+                        <input asp-for="PhoneNumber" class="form-control" placeholder="" />
+                        <label asp-for="PhoneNumber" class="ms-2 text-muted">Phone Number</label>
+                        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
                     </div>
                     <div class="form-floating mb-3 col-md-6">
                         <input asp-for="Password" class="form-control" autocomplete="new-password" aria-required="true" />
@@ -36,9 +36,9 @@
                         <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
                     </div>
                     <div class="form-floating mb-3 col-md-6">
-                        <input asp-for="AppUser.Name" class="form-control" placeholder="" />
-                        <label asp-for="AppUser.Name" class="ms-2 text-muted">Street Address</label>
-                        <span asp-validation-for="AppUser.Name" class="text-danger"></span>
+                        <input asp-for="Name" class="form-control" placeholder="" />
+                        <label asp-for="Name" class="ms-2 text-muted">Name</label>
+                        <span asp-validation-for="Name" class="text-danger"></span>
                     </div>
 
                     <div class="col-12">

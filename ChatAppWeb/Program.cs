@@ -1,7 +1,11 @@
+using Maui_UI_Fiction_Library.API;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddScoped<IApiHelper, ApiHelper>();
 
 var app = builder.Build();
 
