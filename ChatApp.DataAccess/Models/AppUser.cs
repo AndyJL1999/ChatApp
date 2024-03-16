@@ -10,7 +10,6 @@ namespace ChatApp.DataAccess.Models
 {
     public class AppUser : IdentityUser
     {
-        public string Id { get; set; }
         public string Name { get; set; }
 
         [Required]
