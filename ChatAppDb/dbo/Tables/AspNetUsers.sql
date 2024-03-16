@@ -4,7 +4,7 @@
     [Name]                 NVARCHAR (256)     NULL,
     [UserName]             NVARCHAR (256)     NULL,
     [NormalizedUserName]   NVARCHAR (256)     NULL,
-    [Email]                NVARCHAR (256)     NOT NULL,
+    [Email]                NVARCHAR (256)     NOT NULL UNIQUE,
     [NormalizedEmail]      NVARCHAR (256)     NULL,
     [EmailConfirmed]       BIT                NOT NULL,
     [PasswordHash]         NVARCHAR (MAX)     NULL,
