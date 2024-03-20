@@ -1,4 +1,7 @@
-﻿using ChatApp.API.Interfaces;
+﻿using ChatApp.API.DTOs;
+using ChatApp.API.Interfaces;
+using ChatApp.API.Models;
+using ChatApp.DataAccess.Interfaces;
 using ChatApp.DataAccess.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -7,21 +10,25 @@ namespace ChatApp.API.Data.Repositories
 {
     public class AccountRepository : IAccountRepository
     {
+        private readonly DatabaseContext _context;
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly IUserStore<IdentityUser> _userStore;
+        private readonly ITokenService _tokenService;
         private readonly IUserEmailStore<IdentityUser> _emailStore;
 
-        public AccountRepository(SignInManager<IdentityUser> signInManager, UserManager<IdentityUser> userManager,
-            IUserStore<IdentityUser> userStore)
+        public AccountRepository(SignInManager<IdentityUser> signInManager, 
+            UserManager<IdentityUser> userManager, IUserStore<IdentityUser> userStore,
+            ITokenService tokenService)
         {
             _signInManager = signInManager;
             _userManager = userManager;
             _userStore = userStore;
+            _tokenService = tokenService;
             _emailStore = GetEmailStore();
         }
 
-        public async Task<IdentityResult> Register(string name, string email, string password, string phoneNumber)
+        public async Task<ServiceResponse<UserDTO>> Register(string name, string email, string password, string phoneNumber)
         {
             var user = CreateUser();
 
@@ -31,12 +38,56 @@ namespace ChatApp.API.Data.Repositories
 
             user.Name = name;
 
-            return await _userManager.CreateAsync(user, password);
+            var result = await _userManager.CreateAsync(user, password);
+
+            if (result.Succeeded)
+            {
+                return new ServiceResponse<UserDTO>
+                {
+                    Data = new UserDTO
+                    {
+                        Name = user.Name,
+                        Token = await _tokenService.CreateToken(user)
+                    },
+                    Success = true,
+                    Message = "Sign in successful"
+                };
+            }
+
+            return new ServiceResponse<UserDTO>
+            {
+                Data = null,
+                Success = false,
+                Message = "Something went wrong"
+            };
         }
 
-        public async Task<SignInResult> SignIn(string email, string password)
+        public async Task<ServiceResponse<UserDTO>> SignIn(string email, string password)
         {
-            return await _signInManager.PasswordSignInAsync(email, password, false, false);
+            var result = await _signInManager.PasswordSignInAsync(email, password, false, false);
+
+            if (result.Succeeded)
+            {
+                AppUser user = (AppUser)await _userManager.FindByEmailAsync(email);
+
+                return new ServiceResponse<UserDTO>
+                {
+                    Data = new UserDTO
+                    {
+                        Name = user.Name,
+                        Token = await _tokenService.CreateToken(user)
+                    },
+                    Success = true,
+                    Message = "Sign in successful"
+                };
+            }
+
+            return new ServiceResponse<UserDTO>
+            {
+                Data = null,
+                Success = false,
+                Message = "Failed to sign in"
+            };
         }
 
         public async Task SignOut()

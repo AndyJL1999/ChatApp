@@ -1,4 +1,5 @@
 ﻿using ChatApp.API.DTOs;
+using ChatApp.API.Extensions;
 using ChatApp.API.Interfaces;
 using ChatApp.DataAccess.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -21,31 +22,31 @@ namespace ChatApp.API.Controllers
         }
 
         [HttpPost("SignIn")]
-        public async Task<IActionResult> SignIn(LoginDTO login)
+        public async Task<ActionResult<UserDTO>> SignIn(LoginDTO login)
         {
-            var result = await _accountRepo.SignIn(login.Email, login.Password);
+            var response = await _accountRepo.SignIn(login.Email, login.Password);
 
-            if (result.Succeeded)
+            if (response.Success)
             {
-                return Ok("You have signed in");
+                return Ok(response.Data);
             }
 
-            return BadRequest("Failed to sign in");
+            return BadRequest(response.Message);
             
         }
 
         [HttpPost("Register")]
-        public async Task<IActionResult> Register(RegisterDTO register)
+        public async Task<ActionResult<UserDTO>> Register(RegisterDTO register)
         {
-            var result = await _accountRepo.Register(register.Name, register.Email, register.Password, register.PhoneNumber);
+            var response = await _accountRepo.Register(register.Name, register.Email, register.Password, register.PhoneNumber);
 
-            if (result.Succeeded)
+            if (response.Success)
             {
-                return Ok("You have been registered");
+                return Ok(response.Data);
             }
             else
             {
-                return BadRequest("Something went wrong");
+                return BadRequest(response.Message);
             }
             
         }
@@ -57,13 +58,14 @@ namespace ChatApp.API.Controllers
             try
             {
                 await _accountRepo.SignOut();
+
+                return Ok("Successfully signed out");
             }
             catch(Exception ex)
             {
                 return BadRequest(ex.Message);
             }
 
-            return Ok("Successfully signed out");
         }
 
     }
