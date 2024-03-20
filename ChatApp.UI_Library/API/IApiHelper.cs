@@ -1,11 +1,13 @@
-﻿namespace Maui_UI_Fiction_Library.API
+﻿using ChatApp.UI_Library.Models;
+
+namespace Maui_UI_Fiction_Library.API
 {
     public interface IApiHelper
     {
         HttpClient ApiClient { get; }
 
-        Task<string> Authenticate(string email, string password);
-        Task<string> Register(string name, string email, string password, string phoneNumber);
-        Task<string> SignOut();
+        Task<AuthenticatedUser> Authenticate(string email, string password);
+        Task<AuthenticatedUser> Register(string name, string email, string password, string phoneNumber);
+        Task SignOut();
     }
 }

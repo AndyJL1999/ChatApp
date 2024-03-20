@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using ChatApp.UI_Library.Models;
+using Microsoft.Extensions.Configuration;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 
@@ -34,7 +35,7 @@ namespace Maui_UI_Fiction_Library.API
             _apiClient.Timeout = TimeSpan.FromSeconds(30);
         }
 
-        public async Task<string> Authenticate(string email, string password)
+        public async Task<AuthenticatedUser> Authenticate(string email, string password)
         {
             var data = JsonContent.Create(new
             {
@@ -46,16 +47,21 @@ namespace Maui_UI_Fiction_Library.API
             {
                 if (response.IsSuccessStatusCode)
                 {
-                    return await response.Content.ReadAsStringAsync();
+                    var user = await response.Content.ReadFromJsonAsync<AuthenticatedUser>();
+
+                    if (user != null)
+                    {
+                        _apiClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {user.Token}");
+
+                        return user;
+                    }
                 }
-                else
-                {
-                    throw new Exception(response.ReasonPhrase);
-                }
+
+                return null;
             }
         }
 
-        public async Task<string> Register(string name, string email, string password, string phoneNumber)
+        public async Task<AuthenticatedUser> Register(string name, string email, string password, string phoneNumber)
         {
             var data = JsonContent.Create(new
             {
@@ -69,22 +75,27 @@ namespace Maui_UI_Fiction_Library.API
             {
                 if (response.IsSuccessStatusCode)
                 {
-                    return await response.Content.ReadAsStringAsync();
+                    var user = await response.Content.ReadFromJsonAsync<AuthenticatedUser>();
+
+                    if(user != null)
+                    {
+                        _apiClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {user.Token}");
+
+                        return user;
+                    }
                 }
-                else
-                {
-                    throw new Exception(await response.Content.ReadAsStringAsync());
-                }
+
+                return null;
             }
         }
 
-        public async Task<string> SignOut()
+        public async Task SignOut()
         {
             using (HttpResponseMessage response = await _apiClient.PostAsync(_apiClient.BaseAddress + "Account/LogOut", null))
             {
                 if (response.IsSuccessStatusCode)
                 {
-                    return await response.Content.ReadAsStringAsync();
+                    _apiClient.DefaultRequestHeaders.Remove("Authorization");
                 }
                 else
                 {
