@@ -1,11 +1,13 @@
 ﻿using ChatApp.UI_Library.Models;
-using ChatApp.UI_Library.ViewModels;
 using Maui_UI_Fiction_Library.API;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.ComponentModel.DataAnnotations;
-using System.Xml.Linq;
+using System.Security.Claims;
 
 namespace ChatAppWeb.Areas.UserAccount.Controllers
 {
@@ -30,9 +32,25 @@ namespace ChatAppWeb.Areas.UserAccount.Controllers
 
             if (ModelState.IsValid)
             {
-                await _apiHelper.Authenticate(input.Email, input.Password);
+                var user = await _apiHelper.Authenticate(input.Email, input.Password);
 
-                return RedirectToAction("Index", "Home", new { area = "UserHome" });
+                if (user != null)
+                {
+                    var claims = new List<Claim>
+                    {
+                        new Claim(ClaimTypes.Name, user.Name)
+                    };
+
+                    var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                    var principal = new ClaimsPrincipal(identity);
+
+                    await HttpContext.SignInAsync(principal);
+
+                    return RedirectToAction("Index", "Home", new { area = "UserHome" });
+                }
+
+                ModelState.AddModelError(string.Empty, "Wrong Email or Password");
+                return View(input);
             }
             else
             {
@@ -51,14 +69,39 @@ namespace ChatAppWeb.Areas.UserAccount.Controllers
         {
             if (ModelState.IsValid)
             {
-                await _apiHelper.Register(input.Name, input.Email, input.Password, input.PhoneNumber);
+                var user = await _apiHelper.Register(input.Name, input.Email, input.Password, input.PhoneNumber);
 
-                return RedirectToAction("Index", "Home", new { area = "UserHome" });
+                if (user != null)
+                {
+                    var claims = new List<Claim>
+                    {
+                        new Claim(ClaimTypes.Name, user.Name)
+                    };
+
+                    var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                    var principal = new ClaimsPrincipal(identity);
+
+                    await HttpContext.SignInAsync(principal);
+
+                    return RedirectToAction("Index", "Home", new { area = "UserHome" });
+                }
+
+                ModelState.AddModelError(string.Empty, "Something went wrong");
+                return View(input);
             }
             else
             {
                 return View(input);
             }
+        }
+
+        [Authorize]
+        public async Task LogOut()
+        {
+            HttpContext.Session.Clear();
+
+            await _apiHelper.SignOut();
+            await HttpContext.SignOutAsync();
         }
     }
 }
