@@ -9,6 +9,8 @@ namespace ChatApp.UI_Library.Models
     public class AuthenticatedUser
     {
         public string Name { get; set; }
+        public string Email { get; set; }
+        public string PhoneNumber { get; set; }
         internal string Token { get; set; }
     }
 }
