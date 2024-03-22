@@ -75,6 +75,8 @@ namespace ChatApp.API.Data.Repositories
                     Data = new UserDTO
                     {
                         Name = user.Name,
+                        Email = user.NormalizedEmail,
+                        PhoneNumber = user.PhoneNumber,
                         Token = await _tokenService.CreateToken(user)
                     },
                     Success = true,
