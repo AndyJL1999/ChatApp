@@ -10,17 +10,11 @@ namespace Maui_UI_Fiction_Library.API
         private HttpClient _apiClient;
         private readonly IConfiguration _config;
 
-
         public ApiHelper(IConfiguration config)
         {
             _config = config;
 
             InitializeClient();
-        }
-
-        public HttpClient ApiClient
-        {
-            get { return _apiClient; }
         }
 
         private void InitializeClient()
