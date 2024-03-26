@@ -19,9 +19,11 @@ html {
     background: limegreen;
 
     padding: 20px;
+    padding-bottom: 5px;
     border-radius: 10px;
     max-width: 600px;
 
     position: relative;
     margin: 20px;
+    margin-right: -150px;
 }
