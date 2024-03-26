@@ -100,12 +100,14 @@ namespace ChatAppWeb.Areas.UserAccount.Controllers
         }
 
         [Authorize]
-        public async Task LogOut()
+        public async Task<IActionResult> LogOut()
         {
             HttpContext.Session.Clear();
 
             await _apiHelper.SignOut();
             await HttpContext.SignOutAsync();
+
+            return RedirectToAction("Login");
         }
     }
 }
