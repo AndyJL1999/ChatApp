@@ -16,18 +16,32 @@
 
                     @if(User.Identity.IsAuthenticated)
                     {
-                        <a href="/" class="d-flex align-items-center pb-3 mb-md-0 me-md-auto text-white text-decoration-none" >
+                        <div class="d-flex align-items-center pb-3 mb-md-0 me-md-auto text-white text-decoration-none" >
                             <img src="https://placehold.co/500x500/png" class="justify-content-sm-start" style="width:30%; border-radius:50%;"/>
                             <span class="fs-5 d-none d-sm-inline ms-2">@User.Identity.Name</span>
-                        </a>
+
+                            <div class="dropdown">
+                                <button class="btn dropdown-toggle text-white ms-5" type="button" data-bs-toggle="dropdown">
+                                </button>
+
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a class="dropdown-item nav-link" asp-area="UserHome" asp-controller="Home" asp-action="Index">Home</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item nav-link" asp-area="UserHome" asp-controller="Chat" asp-action="Create">Create Chat</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item nav-link" asp-area="UserHome" asp-controller="Group" asp-action="Create">Create Group</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item text-danger nav-link" asp-area="UserAccount" asp-controller="Auth" asp-action="LogOut">Log Out</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
                         <ul class="navbar-nav d-flex flex-column mt-1 w-100">
-                            <li class="nav-item w-100">
-                                <a class="nav-link" asp-area="UserHome" asp-controller="Home" asp-action="Index">Home</a>
-                            </li>
                             
-                            <li class="nav-item w-100">
-                                <a class="nav-link" asp-area="UserAccount" asp-controller="Auth" asp-action="LogOut">Log Out</a>
-                            </li>
                         </ul>
                     }
                     
