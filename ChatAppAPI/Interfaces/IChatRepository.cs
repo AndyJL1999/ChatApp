@@ -2,8 +2,7 @@
 {
     public interface IChatRepository
     {
-        Task UpsertChat(string? id, string name);
-        Task InsertUserChat(string userId, string chatId);
+        Task CreateChat(string userId, string currentUsersName, string number);
         Task InsertMessage(string userId, string content);
     }
 }

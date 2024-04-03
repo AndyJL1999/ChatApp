@@ -18,33 +18,21 @@ namespace ChatApp.API.Controllers
         }
 
         [HttpPost("CreateChat")]
-        public async Task<IActionResult> CreateChat(string? id, string name)
+        public async Task<IActionResult> CreateChat(string number)
         {
             try
             {
-                await _chatRepo.UpsertChat(id, name);
+                var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                var currentUserName = User.FindFirstValue(ClaimTypes.Name);
+
+                await _chatRepo.CreateChat(currentUserId, currentUserName, number);
+
+                return Ok();
             }
             catch(Exception ex)
             {
                 return BadRequest(ex.Message);
             }
-
-            return Ok();
-        }
-
-        [HttpPost("CreateUserChat")]
-        public async Task<IActionResult> CreateUserChat(string userId, string chatId)
-        {
-            try
-            {
-                await _chatRepo.InsertUserChat(userId, chatId);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-
-            return Ok();
         }
 
         [HttpPost("CreateMessage")]
@@ -52,16 +40,16 @@ namespace ChatApp.API.Controllers
         {
             try
             {
-                var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
                 await _chatRepo.InsertMessage(userId, content);
+
+                return Ok();
             }
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
-
-            return Ok();
         }
     }
 }
