@@ -28,7 +28,7 @@ namespace ChatApp.API.Data.Repositories
             _emailStore = GetEmailStore();
         }
 
-        public async Task<ServiceResponse<UserDTO>> Register(string name, string email, string password, string phoneNumber)
+        public async Task<ServiceResponse<AuthUserDTO>> Register(string name, string email, string password, string phoneNumber)
         {
             var user = CreateUser();
 
@@ -42,9 +42,9 @@ namespace ChatApp.API.Data.Repositories
 
             if (result.Succeeded)
             {
-                return new ServiceResponse<UserDTO>
+                return new ServiceResponse<AuthUserDTO>
                 {
-                    Data = new UserDTO
+                    Data = new AuthUserDTO
                     {
                         Name = user.Name,
                         Token = await _tokenService.CreateToken(user)
@@ -54,7 +54,7 @@ namespace ChatApp.API.Data.Repositories
                 };
             }
 
-            return new ServiceResponse<UserDTO>
+            return new ServiceResponse<AuthUserDTO>
             {
                 Data = null,
                 Success = false,
@@ -62,7 +62,7 @@ namespace ChatApp.API.Data.Repositories
             };
         }
 
-        public async Task<ServiceResponse<UserDTO>> SignIn(string email, string password)
+        public async Task<ServiceResponse<AuthUserDTO>> SignIn(string email, string password)
         {
             var result = await _signInManager.PasswordSignInAsync(email, password, false, false);
 
@@ -70,9 +70,9 @@ namespace ChatApp.API.Data.Repositories
             {
                 AppUser user = (AppUser)await _userManager.FindByEmailAsync(email);
 
-                return new ServiceResponse<UserDTO>
+                return new ServiceResponse<AuthUserDTO>
                 {
-                    Data = new UserDTO
+                    Data = new AuthUserDTO
                     {
                         Name = user.Name,
                         Email = user.NormalizedEmail,
@@ -84,7 +84,7 @@ namespace ChatApp.API.Data.Repositories
                 };
             }
 
-            return new ServiceResponse<UserDTO>
+            return new ServiceResponse<AuthUserDTO>
             {
                 Data = null,
                 Success = false,

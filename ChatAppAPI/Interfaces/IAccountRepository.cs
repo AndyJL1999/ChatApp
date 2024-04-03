@@ -7,8 +7,8 @@ namespace ChatApp.API.Interfaces
 {
     public interface IAccountRepository
     {
-        Task<ServiceResponse<UserDTO>> SignIn(string email, string password);
-        Task<ServiceResponse<UserDTO>> Register(string name, string email, string password, string phoneNumber);
+        Task<ServiceResponse<AuthUserDTO>> SignIn(string email, string password);
+        Task<ServiceResponse<AuthUserDTO>> Register(string name, string email, string password, string phoneNumber);
         Task SignOut();
     }
 }

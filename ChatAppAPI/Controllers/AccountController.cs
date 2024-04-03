@@ -22,7 +22,7 @@ namespace ChatApp.API.Controllers
         }
 
         [HttpPost("SignIn")]
-        public async Task<ActionResult<UserDTO>> SignIn(LoginDTO login)
+        public async Task<ActionResult<AuthUserDTO>> SignIn(LoginDTO login)
         {
             var response = await _accountRepo.SignIn(login.Email, login.Password);
 
@@ -36,7 +36,7 @@ namespace ChatApp.API.Controllers
         }
 
         [HttpPost("Register")]
-        public async Task<ActionResult<UserDTO>> Register(RegisterDTO register)
+        public async Task<ActionResult<AuthUserDTO>> Register(RegisterDTO register)
         {
             var response = await _accountRepo.Register(register.Name, register.Email, register.Password, register.PhoneNumber);
 
