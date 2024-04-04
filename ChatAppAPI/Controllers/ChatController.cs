@@ -20,36 +20,36 @@ namespace ChatApp.API.Controllers
         [HttpPost("CreateChat")]
         public async Task<IActionResult> CreateChat(string number)
         {
-            try
-            {
-                var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                var currentUserName = User.FindFirstValue(ClaimTypes.Name);
+            var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var currentUserEmail = User.FindFirstValue(ClaimTypes.Name); 
 
-                await _chatRepo.CreateChat(currentUserId, currentUserName, number);
+            var result = await _chatRepo.CreateChat(currentUserId, currentUserEmail, number);
 
-                return Ok();
-            }
-            catch(Exception ex)
+            if (result.Success)
             {
-                return BadRequest(ex.Message);
+                // Create UserChat relationship for both chatters with the same chat id
+                await _chatRepo.InsertUserChat(currentUserId, result.Data.NewChatId);
+                await _chatRepo.InsertUserChat(result.Data.UserForChatId, result.Data.NewChatId);
+
+                return Ok(result.Message);
             }
+
+            return BadRequest(result.Message);
         }
 
         [HttpPost("CreateMessage")]
         public async Task<IActionResult> CreateMessage(string content)
         {
-            try
-            {
-                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
+            if (string.IsNullOrEmpty(userId) == false)
+            {
                 await _chatRepo.InsertMessage(userId, content);
 
-                return Ok();
+                return Ok("Message Created");
             }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+
+            return BadRequest("No Authorized user found");
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using ChatApp.API.Interfaces;
+using ChatApp.API.Models;
 using ChatApp.DataAccess.Interfaces;
 
 namespace ChatApp.API.Data.Repositories
@@ -14,29 +15,46 @@ namespace ChatApp.API.Data.Repositories
             _userRepo = userRepo;
         }
         
-        public async Task CreateChat(string userId, string currentUsersName, string number)
+        public async Task<ServiceResponse<dynamic>> CreateChat(string userId, string currentUsersEmail, string number)
         {
             // Get the user you wish to chat with by phone number
             var userForChat = _userRepo.GetUserByPhone(number);
             // Generate chat id
             var newChatId = Guid.NewGuid().ToString();
 
-            // Create chat 
-            await _chatData.UpsertChat(newChatId, $"{currentUsersName}/{userForChat.Name}");
+            if(userForChat != null)
+            {
+                // Create chat 
+                await _chatData.UpsertChat(newChatId, $"{currentUsersEmail}/{userForChat.Email}");
 
-            // Create UserChat relationship for both chatters with the same chat id
-            await InsertUserChat(userId, newChatId);
-            await InsertUserChat(userForChat.Id, newChatId);
+                return new ServiceResponse<dynamic>
+                {
+                    Data = new
+                    {
+                        UserForChatId = userForChat.Id,
+                        NewChatId = newChatId
+                    },
+                    Message = "Chat created!",
+                    Success = true
+                };
+            }
+
+            return new ServiceResponse<dynamic>
+            {
+                Message = "NO user found with that number",
+                Success = false
+            };
+
         }
 
         public async Task InsertMessage(string userId, string content)
         {
             string id = Guid.NewGuid().ToString();
 
-            await _chatData.InsertMessage(id, userId, null, null, content, null, null, null);
+            await _chatData.InsertMessage(id, userId, null, null, content, DateTime.UtcNow, null, null);
         }
 
-        private async Task InsertUserChat(string userId, string chatId)
+        public async Task InsertUserChat(string userId, string chatId)
         {
             // Generate id for UserChat relationship 
             string id = Guid.NewGuid().ToString();
