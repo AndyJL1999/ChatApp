@@ -11,8 +11,5 @@ namespace ChatApp.DataAccess.Models
     public class AppUser : IdentityUser
     {
         public string Name { get; set; }
-
-        [Required]
-        public string Email { get; set; }
     }
 }
