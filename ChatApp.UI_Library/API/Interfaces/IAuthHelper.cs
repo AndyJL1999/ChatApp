@@ -1,8 +1,13 @@
 ﻿using ChatApp.UI_Library.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace Maui_UI_Fiction_Library.API
+namespace ChatApp.UI_Library.API.Interfaces
 {
-    public interface IApiHelper
+    public interface IAuthHelper
     {
         Task<AuthenticatedUser> Authenticate(string email, string password);
         Task<AuthenticatedUser> Register(string name, string email, string password, string phoneNumber);
