@@ -26,6 +26,7 @@ namespace ChatApp.API.Data.Repositories
                 {
                     Id = user.Id,
                     Name = user.Name,
+                    Email = user.Email,
                     PhoneNumber = user.PhoneNumber
                 };
             }
