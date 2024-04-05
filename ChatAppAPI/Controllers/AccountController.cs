@@ -32,7 +32,6 @@ namespace ChatApp.API.Controllers
             }
 
             return BadRequest(response.Message);
-            
         }
 
         [HttpPost("Register")]
@@ -44,11 +43,8 @@ namespace ChatApp.API.Controllers
             {
                 return Ok(response.Data);
             }
-            else
-            {
-                return BadRequest(response.Message);
-            }
-            
+ 
+            return BadRequest(response.Message);
         }
 
         [Authorize]

@@ -42,11 +42,15 @@ namespace ChatApp.API.Data.Repositories
 
             if (result.Succeeded)
             {
+                await _signInManager.SignInAsync(user, isPersistent: false);
+
                 return new ServiceResponse<AuthUserDTO>
                 {
                     Data = new AuthUserDTO
                     {
                         Name = user.Name,
+                        Email = user.Email,
+                        PhoneNumber = user.PhoneNumber,
                         Token = await _tokenService.CreateToken(user)
                     },
                     Success = true,
@@ -68,14 +72,14 @@ namespace ChatApp.API.Data.Repositories
 
             if (result.Succeeded)
             {
-                AppUser user = (AppUser)await _userManager.FindByEmailAsync(email);
+                var user = await _userManager.FindByEmailAsync(email) as AppUser;
 
                 return new ServiceResponse<AuthUserDTO>
                 {
                     Data = new AuthUserDTO
                     {
                         Name = user.Name,
-                        Email = user.NormalizedEmail,
+                        Email = user.Email,
                         PhoneNumber = user.PhoneNumber,
                         Token = await _tokenService.CreateToken(user)
                     },
@@ -83,6 +87,7 @@ namespace ChatApp.API.Data.Repositories
                     Message = "Sign in successful"
                 };
             }
+            
 
             return new ServiceResponse<AuthUserDTO>
             {
