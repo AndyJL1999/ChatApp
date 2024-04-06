@@ -1,4 +1,6 @@
-using Maui_UI_Fiction_Library.API;
+using ChatApp.UI_Library;
+using ChatApp.UI_Library.API;
+using ChatApp.UI_Library.API.Interfaces;
 using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,7 +21,7 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 
-builder.Services.AddSingleton<IApiHelper, ApiHelper>();
+SetUp.AddLibraryServices(builder.Services);
 
 var app = builder.Build();
 
