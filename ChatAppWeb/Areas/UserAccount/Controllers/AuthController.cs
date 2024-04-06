@@ -1,5 +1,4 @@
 ﻿using ChatApp.UI_Library.Models;
-using Maui_UI_Fiction_Library.API;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
@@ -8,17 +7,18 @@ using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
+using ChatApp.UI_Library.API.Interfaces;
 
 namespace ChatAppWeb.Areas.UserAccount.Controllers
 {
     [Area("UserAccount")]
     public class AuthController : Controller
     {
-        private readonly IApiHelper _apiHelper;
+        private readonly IAuthHelper _authHelper;
 
-        public AuthController(IApiHelper apiHelper)
+        public AuthController(IAuthHelper authHelper)
         {
-            _apiHelper = apiHelper;
+            _authHelper = authHelper;
         }
 
         public IActionResult Login()
@@ -32,7 +32,7 @@ namespace ChatAppWeb.Areas.UserAccount.Controllers
 
             if (ModelState.IsValid)
             {
-                var user = await _apiHelper.Authenticate(input.Email, input.Password);
+                var user = await _authHelper.Authenticate(input.Email, input.Password);
 
                 if (user != null)
                 {
@@ -71,7 +71,7 @@ namespace ChatAppWeb.Areas.UserAccount.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = await _apiHelper.Register(input.Name, input.Email, input.Password, input.PhoneNumber);
+                var user = await _authHelper.Register(input.Name, input.Email, input.Password, input.PhoneNumber);
 
                 if (user != null)
                 {
@@ -104,7 +104,7 @@ namespace ChatAppWeb.Areas.UserAccount.Controllers
         {
             HttpContext.Session.Clear();
 
-            await _apiHelper.SignOut();
+            await _authHelper.SignOut();
             await HttpContext.SignOutAsync();
 
             return RedirectToAction("Login");
