@@ -62,6 +62,8 @@
     <Folder Include="dbo\StoredProcedures\Chat_Procedures" />
     <Folder Include="dbo\StoredProcedures\UserChat_Procedures" />
     <Folder Include="dbo\StoredProcedures\Message_Procedures" />
+    <Folder Include="dbo\StoredProcedures\Group_Procedures" />
+    <Folder Include="dbo\StoredProcedures\UserGroup_Procedures" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="dbo\Tables\Chat.sql" />
@@ -81,5 +83,9 @@
     <Build Include="dbo\StoredProcedures\UserChat_Procedures\spUserChat_Insert.sql" />
     <Build Include="dbo\StoredProcedures\Message_Procedures\spMessage_Insert.sql" />
     <Build Include="dbo\StoredProcedures\Message_Procedures\spMessage_Delete.sql" />
+    <Build Include="dbo\StoredProcedures\Group_Procedures\spGroup_Upsert.sql" />
+    <Build Include="dbo\StoredProcedures\UserGroup_Procedures\spUserGroup_Insert.sql" />
+    <Build Include="dbo\StoredProcedures\Chat_Procedures\spChat_GetAllChatsForUser.sql" />
+    <Build Include="dbo\StoredProcedures\Group_Procedures\spGroup_GetAllGroupsForUser.sql" />
   </ItemGroup>
 </Project>
