@@ -26,10 +26,10 @@ namespace ChatApp.UI_Library.API
             {
                 if (response.IsSuccessStatusCode)
                 {
-                    return "Chat created successfully!";
+                    return await response.Content.ReadAsStringAsync();
                 }
 
-                return "Something went wrong.";
+                return null;
             }
         }
     }
