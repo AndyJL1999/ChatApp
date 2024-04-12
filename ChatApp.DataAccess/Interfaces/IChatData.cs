@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ChatApp.DataAccess.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,10 +9,9 @@ namespace ChatApp.DataAccess.Interfaces
 {
     public interface IChatData
     {
+        Task<string> GetRecipientFromChat(string currentUserId, string chatId);
+        Task<IEnumerable<Chat>> GetAllChatsForUser(string userId);
         Task UpsertChat(string id, string name);
         Task InsertUserChat(string id, string userId, string chatId);
-        Task InsertMessage(string id, string userId, string? groupId, string? chatId, string content,
-            DateTime? sentAt, DateTime? deliveredAt, DateTime? seenAt);
-        Task DeleteMessage(string id);
     }
 }
