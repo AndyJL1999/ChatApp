@@ -88,5 +88,6 @@
     <Build Include="dbo\StoredProcedures\Chat_Procedures\spChat_GetAllChatsForUser.sql" />
     <Build Include="dbo\StoredProcedures\Group_Procedures\spGroup_GetAllGroupsForUser.sql" />
     <Build Include="dbo\StoredProcedures\UserChat_Procedures\spUserChat_GetRecipientFromChat.sql" />
+    <Build Include="dbo\StoredProcedures\Message_Procedures\spMessage_GetAllFromChannel.sql" />
   </ItemGroup>
 </Project>
