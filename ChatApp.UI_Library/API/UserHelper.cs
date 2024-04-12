@@ -19,6 +19,21 @@ namespace ChatApp.UI_Library.API
             _apiHelper = apiHelper;
         }
 
+        public async Task<RecipientModel> GetRecipientFromChat(string chatId)
+        {
+            using (HttpResponseMessage response = await _apiHelper.ApiClient.GetAsync(_apiHelper.ApiClient.BaseAddress + $"User/GetRecipientFromChat/{chatId}"))
+            {
+                if (response.IsSuccessStatusCode)
+                {
+                    var result = await response.Content.ReadFromJsonAsync<RecipientModel>();
+
+                    return result;
+                }
+
+                return null;
+            }
+        }
+
         public async Task<IEnumerable<ChannelModel>> GetAllUserChannels()
         {
             using (HttpResponseMessage response = await _apiHelper.ApiClient.GetAsync(_apiHelper.ApiClient.BaseAddress + "User/GetAllChannels"))
