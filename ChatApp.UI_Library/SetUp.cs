@@ -17,7 +17,8 @@ namespace ChatApp.UI_Library
                 .AddSingleton<IApiHelper, ApiHelper>()
                 .AddScoped<IAuthHelper, AuthHelper>()
                 .AddScoped<IChatHelper, ChatHelper>()
-                .AddScoped<IUserHelper, UserHelper>();
+                .AddScoped<IUserHelper, UserHelper>()
+                .AddScoped<IMessageHelper, MessageHelper>();
         }
     }
 }
