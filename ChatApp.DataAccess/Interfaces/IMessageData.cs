@@ -9,7 +9,7 @@ namespace ChatApp.DataAccess.Interfaces
 {
     public interface IMessageData
     {
-        Task<IEnumerable<Message>> GetAllFromChannel(string channelId);
+        Task<IEnumerable<(string Id, string UserName, string UserId, string Content, DateTime SentAt)>> GetAllFromChannel(string channelId);
         Task InsertMessage(string id, string userId, string? groupId, string? chatId, string content,
             DateTime? sentAt, DateTime? deliveredAt, DateTime? seenAt);
         Task DeleteMessage(string id);

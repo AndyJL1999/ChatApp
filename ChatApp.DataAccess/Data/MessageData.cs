@@ -18,8 +18,9 @@ namespace ChatApp.DataAccess.Data
             _db = db;
         }
 
-        public Task<IEnumerable<Message>> GetAllFromChannel(string channelId) =>
-            _db.LoadData<Message, dynamic>("spMessage_GetAllFromChannel", new { ChannelId = channelId });
+        public Task<IEnumerable<(string Id, string UserName, string UserId, string Content, DateTime SentAt)>> GetAllFromChannel(string channelId) =>_db
+                .LoadData<(string Id, string UserName, string UserId, string Content, DateTime SentAt), dynamic>
+                ("spMessage_GetAllFromChannel", new { ChannelId = channelId });
 
         public Task InsertMessage(string id, string userId, string? groupId, string? chatId, string content,
             DateTime? sentAt, DateTime? deliveredAt, DateTime? seenAt) =>
