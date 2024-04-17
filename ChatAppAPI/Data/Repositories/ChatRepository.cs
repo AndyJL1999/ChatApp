@@ -1,4 +1,5 @@
-﻿using ChatApp.API.Interfaces;
+﻿using ChatApp.API.DTOs;
+using ChatApp.API.Interfaces;
 using ChatApp.API.Models;
 using ChatApp.DataAccess.Interfaces;
 
@@ -14,24 +15,24 @@ namespace ChatApp.API.Data.Repositories
             _chatData = chatData;
             _userRepo = userRepo;
         }
-        
+
         public async Task<ServiceResponse<dynamic>> CreateChat(string userId, string currentUsersEmail, string number)
         {
             // Get the user you wish to chat with by phone number
-            var userForChat = _userRepo.GetUserByPhone(number);
+            var recipient = _userRepo.GetUserByPhone(number);
             // Generate chat id
             var newChatId = Guid.NewGuid().ToString();
 
-            if(userForChat != null)
+            if(recipient != null)
             {
                 // Create chat 
-                await _chatData.UpsertChat(newChatId, $"{currentUsersEmail}/{userForChat.Email}");
+                await _chatData.UpsertChat(newChatId, $"{currentUsersEmail}/{recipient.Email}");
 
                 return new ServiceResponse<dynamic>
                 {
-                    Data = new
+                    Data = new // return recipient id and new chat id as anonymous object for controller
                     {
-                        UserForChatId = userForChat.Id,
+                        RecipientId = recipient.Id,
                         NewChatId = newChatId
                     },
                     Message = "Chat created!",
@@ -45,13 +46,6 @@ namespace ChatApp.API.Data.Repositories
                 Success = false
             };
 
-        }
-
-        public async Task InsertMessage(string userId, string content)
-        {
-            string id = Guid.NewGuid().ToString();
-
-            await _chatData.InsertMessage(id, userId, null, null, content, DateTime.UtcNow, null, null);
         }
 
         public async Task InsertUserChat(string userId, string chatId)
