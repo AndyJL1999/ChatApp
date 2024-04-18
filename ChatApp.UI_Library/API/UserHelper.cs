@@ -48,5 +48,20 @@ namespace ChatApp.UI_Library.API
                 return null;
             }
         }
+
+        public async Task<string> GetCurrentUserId()
+        {
+            using (HttpResponseMessage response = await _apiHelper.ApiClient.GetAsync(_apiHelper.ApiClient.BaseAddress + "User/GetCurrentUserId"))
+            {
+                if (response.IsSuccessStatusCode)
+                {
+                    var result = await response.Content.ReadAsStringAsync();
+
+                    return result.Trim('"');
+                }
+
+                return null;
+            }
+        }
     }
 }
