@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ChatApp.UI_Library.Models;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -10,8 +11,9 @@ namespace ChatApp.UI_Library.ViewModels
 {
     public class ChatVM
     {
-        [Phone(ErrorMessage = "Enter valid phone number")]
-        [DisplayName("Phone Number")]
-        public string PhoneNumber { get; set; }
+        public ChannelModel Channel { get; set; }
+        public RecipientModel Recipient { get; set; }
+        public List<MessageModel> Messages { get; set; }
+
     }
 }

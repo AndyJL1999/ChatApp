@@ -1,4 +1,5 @@
 ﻿using ChatApp.DataAccess.Models;
+using ChatApp.UI_Library.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -11,14 +12,9 @@ namespace ChatApp.UI_Library.ViewModels
 {
     public class GroupVM
     {
-        [Required]
-        [DisplayName("Group Name")]
-        public string GroupName { get; set; }
-
-        [Phone(ErrorMessage = "Enter valid phone number")]
-        [DisplayName("Phone Number")]
-        public string PhoneNumber { get; set; }
-
-        public List<string> PhoneNumbers { get; set; } 
+        public string CurrentUserId { get; set; }
+        public ChannelModel Channel { get; set; }
+        public List<string> Recipients { get; set; }
+        public List<MessageModel> Messages { get; set; }
     }
 }
