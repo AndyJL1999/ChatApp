@@ -26,6 +26,14 @@ namespace ChatApp.DataAccess.Data
             return result.FirstOrDefault();
         }
 
+        public async Task<bool> DoesChatExist(string userId, string recipientId)
+        {
+            var result = await _db.LoadData<bool, dynamic>(
+                "spChat_DoesChatExist", new { UserId = userId, RecipientId = recipientId });
+
+            return result.FirstOrDefault();
+        }
+
         public Task<IEnumerable<Chat>> GetAllChatsForUser(string userId) =>
             _db.LoadData<Chat, dynamic>("spChat_GetAllChatsForUser", new { UserId = userId });
 

@@ -10,6 +10,7 @@ namespace ChatApp.DataAccess.Interfaces
     public interface IChatData
     {
         Task<string> GetRecipientFromChat(string currentUserId, string chatId);
+        Task<bool> DoesChatExist(string userId, string recipientId);
         Task<IEnumerable<Chat>> GetAllChatsForUser(string userId);
         Task UpsertChat(string id, string name);
         Task InsertUserChat(string id, string userId, string chatId);
