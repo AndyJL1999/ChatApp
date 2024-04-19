@@ -21,6 +21,13 @@ namespace ChatApp.DataAccess.Data
         public Task<IEnumerable<Group>> GetAllGroupsForUser(string userId) =>
             _db.LoadData<Group, dynamic>("spGroup_GetAllGroupsForUser", new { UserId = userId });
 
+        public async Task<Group> GetGroupById(string groupId)
+        {
+            var result = await _db.LoadData<Group, dynamic>("spGroup_GetGroupById", new { GroupId = groupId });
+
+            return result.FirstOrDefault();
+        }
+
         public Task UpsertGroup(string id, string name) =>
             _db.SaveData("spGroup_Upsert", new { Id = id, Name = name });
 
