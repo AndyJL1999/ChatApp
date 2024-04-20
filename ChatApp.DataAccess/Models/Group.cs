@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ChatApp.DataAccess.Models
 {
-    public class Group : IChannel
+    public class Group
     {
         public string Id { get; set; }
         public string Name { get; set; }
