@@ -28,7 +28,7 @@ namespace ChatApp.DataAccess.Data
                 new
                 {
                     Id = id,
-                    UserID = userId,
+                    UserId = userId,
                     GroupId = groupId,
                     ChatId = chatId,
                     Content = content,
