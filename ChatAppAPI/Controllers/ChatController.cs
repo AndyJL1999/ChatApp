@@ -13,27 +13,32 @@ namespace ChatApp.API.Controllers
     public class ChatController : Controller
     {
         private readonly IChatRepository _chatRepo;
+        private readonly IUserRepository _userRepo;
 
-        public ChatController(IChatRepository chatRepo)
+        public ChatController(IChatRepository chatRepo, IUserRepository userRepo)
         {
             _chatRepo = chatRepo;
+            _userRepo = userRepo;
         }
 
         [HttpPost("CreateChat")]
         public async Task<IActionResult> CreateChat(string number)
         {
-            var currentUserId = User.GetUserId();
-            var currentUserEmail = User.FindFirstValue(ClaimTypes.Name); 
+            string currentUserId = User.GetUserId();
+            string currentUserEmail = User.FindFirstValue(ClaimTypes.Name);
+
+            var user = _userRepo.GetUserByPhone(number);
+
+            if (user.Id == currentUserId)
+            {
+                return BadRequest("Can't start chat with yourself");
+            }
 
             var result = await _chatRepo.CreateChat(currentUserId, currentUserEmail, number);
 
             if (result.Success)
             {
-                // Create UserChat relationship for both chatters with the same chat id
-                await _chatRepo.InsertUserChat(currentUserId, result.Data.NewChatId);
-                await _chatRepo.InsertUserChat(result.Data.RecipientId, result.Data.NewChatId);
-
-                return Ok(result.Message);
+                return Ok(result.Data);
             }
 
             return BadRequest(result.Message);

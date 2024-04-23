@@ -16,31 +16,48 @@ namespace ChatApp.API.Data.Repositories
             _userRepo = userRepo;
         }
 
-        public async Task<ServiceResponse<dynamic>> CreateChat(string userId, string currentUsersEmail, string number)
+        public async Task<ServiceResponse<NewChatDTO>> CreateChat(string userId, string currentUsersEmail, string number)
         {
             // Get the user you wish to chat with by phone number
-            var recipient = _userRepo.GetUserByPhone(number);
+            UserDTO recipient = _userRepo.GetUserByPhone(number);
             // Generate chat id
-            var newChatId = Guid.NewGuid().ToString();
+            string newChatId = Guid.NewGuid().ToString();
 
             if(recipient != null)
             {
+                // Check if this chat pair already exists
+                bool chatExists = await _chatData.DoesChatExist(userId, recipient.Id);
+
+                if (chatExists)
+                {
+                    return new ServiceResponse<NewChatDTO>
+                    {
+                        Message = "This chat already exists!",
+                        Success = false
+                    };
+                }
+
                 // Create chat 
                 await _chatData.UpsertChat(newChatId, $"{currentUsersEmail}/{recipient.Email}");
 
-                return new ServiceResponse<dynamic>
+                // Create UserChat relationship for both chatters with the same chat id
+                await InsertUserChat(userId, newChatId);
+                await InsertUserChat(recipient.Id, newChatId);
+
+                return new ServiceResponse<NewChatDTO>
                 {
-                    Data = new // return recipient id and new chat id as anonymous object for controller
+                    Data = new NewChatDTO // return new chat info for client
                     {
+                        ChatId = newChatId,
                         RecipientId = recipient.Id,
-                        NewChatId = newChatId
+                        RecipientName = recipient.Name,
                     },
                     Message = "Chat created!",
                     Success = true
                 };
             }
 
-            return new ServiceResponse<dynamic>
+            return new ServiceResponse<NewChatDTO>
             {
                 Message = "NO user found with that number",
                 Success = false
