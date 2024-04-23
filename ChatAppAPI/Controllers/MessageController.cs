@@ -1,4 +1,5 @@
 ﻿using ChatApp.API.DTOs;
+using ChatApp.API.Extensions;
 using ChatApp.API.Interfaces;
 using ChatApp.API.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -35,19 +36,18 @@ namespace ChatApp.API.Controllers
         [HttpPost("CreateMessage")]
         public async Task<IActionResult> CreateMessage(CreateMessageDTO messageDTO)
         {
-            var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            string result = string.Empty;
+            ServiceResponse<MessageDTO> result;
 
             if (messageDTO.ChannelType == ChannelType.Chat.ToString())
             {
-                result = await _messageRepo.InsertMessage(currentUserId, messageDTO.ChannelId, ChannelType.Chat, messageDTO.Content);
+                result = await _messageRepo.InsertMessage(messageDTO.UserId, messageDTO.ChannelId, ChannelType.Chat, messageDTO.Content);
             }
             else
             {
-                result = await _messageRepo.InsertMessage(currentUserId, messageDTO.ChannelId, ChannelType.Group, messageDTO.Content);
+                result = await _messageRepo.InsertMessage(messageDTO.UserId, messageDTO.ChannelId, ChannelType.Group, messageDTO.Content);
             }
-            
-            return Ok(result);
+
+            return Ok(result.Data);
         }
     }
 }
