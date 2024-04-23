@@ -48,5 +48,26 @@ namespace ChatApp.API.Controllers
 
             return BadRequest(result.Message);
         }
+
+        [HttpGet("GetCurrentUserId")]
+        public IActionResult GetCurrentUserId()
+        {
+            string id = User.GetUserId();
+
+            if(string.IsNullOrEmpty(id) == false)
+            {
+                return Ok(id);
+            }
+
+            return BadRequest();
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetCurrentUser()
+        {
+            var user = await _userRepo.GetUserByIdAsync(User.GetUserId());
+
+            return Ok(user);
+        }
     }
 }

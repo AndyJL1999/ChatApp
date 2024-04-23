@@ -4,42 +4,43 @@ using ChatApp.API.Models;
 using ChatApp.DataAccess.Interfaces;
 using ChatApp.DataAccess.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace ChatApp.API.Data.Repositories
 {
     public class UserRepository : IUserRepository
     {
         private readonly DatabaseContext _context;
+        private readonly IUserData _userData;
         private readonly IChatData _chatData;
-        private readonly IGroupData _groupData;
 
-        public UserRepository(DatabaseContext context, IChatData chatData, IGroupData groupData)
+        public UserRepository(DatabaseContext context, IUserData userData, IChatData chatData)
         {
             _context = context;
+            _userData = userData;
             _chatData = chatData;
-            _groupData = groupData;
         }
 
         public async Task<ServiceResponse<IEnumerable<ChannelDTO>>> GetAllUserChannels(string userId)
         {
             if(string.IsNullOrEmpty(userId) == false)
             {
-                var chats = await _chatData.GetAllChatsForUser(userId);
-                var groups = await _groupData.GetAllGroupsForUser(userId);
-
-                Dictionary<string, List<IChannel>> pairs = new Dictionary<string, List<IChannel>>();
-
-                pairs.Add("Groups", new List<IChannel>(groups));
-                pairs.Add("Chats", new List<IChannel>(chats));
-
+                var data = await _userData.GetAllChannels(userId);
                 List<ChannelDTO> channels = new List<ChannelDTO>();
 
-                foreach (var pair in pairs)
+                foreach (var channel in data)
                 {
-                    if(pair.Key == "Chats")
-                        pair.Value.ForEach(c => channels.Add(new ChannelDTO(c, ChannelType.Chat)));
+                    if(channel.Type == "Chat")
+                    {
+                        string recipientId = await _chatData.GetRecipientFromChat(userId, channel.Id);
+                        string recipientName = (await GetUserByIdAsync(recipientId)).Name;
+
+                        channels.Add(new ChannelDTO(channel.Id, recipientName, ChannelType.Chat));
+                    }
                     else
-                        pair.Value.ForEach(c => channels.Add(new ChannelDTO(c, ChannelType.Group)));
+                    {
+                        channels.Add(new ChannelDTO(channel.Id, channel.Name, ChannelType.Group));
+                    }
                 }
 
                 return new ServiceResponse<IEnumerable<ChannelDTO>>
@@ -52,7 +53,6 @@ namespace ChatApp.API.Data.Repositories
 
             return new ServiceResponse<IEnumerable<ChannelDTO>>
             {
-                Data = null,
                 Message = "Failed to acquire channels",
                 Success = false
             };
@@ -82,10 +82,27 @@ namespace ChatApp.API.Data.Repositories
 
             return new ServiceResponse<UserDTO>
             {
-                Data = null,
                 Message = "User NOT Found",
                 Success = false
             };
+        }
+
+        public async Task<UserDTO> GetUserByIdAsync(string id)
+        {
+            var user = await _context.AppUsers.FirstOrDefaultAsync(u => u.Id == id);
+
+            if (user != null)
+            {
+                return new UserDTO
+                {
+                    Id = user.Id,
+                    Name = user.Name,
+                    Email = user.Email,
+                    PhoneNumber = user.PhoneNumber
+                };
+            }
+
+            return null;
         }
 
         public UserDTO GetUserByPhone(string number)
@@ -104,6 +121,18 @@ namespace ChatApp.API.Data.Repositories
             }
 
             return null;
+        }
+
+        public bool DoesUserExist(string userId)
+        {
+            var user = _context.AppUsers.FirstOrDefault(u => u.Id == userId);
+
+            if(user != null)
+            {
+                return true;
+            }
+
+            return false;
         }
     }
 }
