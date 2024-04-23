@@ -69,6 +69,7 @@ builder.Services.AddSingleton<ISqlDataAccess, SqlDataAccess>();
 builder.Services.AddSingleton<IChatData, ChatData>();
 builder.Services.AddSingleton<IGroupData, GroupData>();
 builder.Services.AddSingleton<IMessageData, MessageData>();
+builder.Services.AddSingleton<IUserData, UserData>();
 
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
