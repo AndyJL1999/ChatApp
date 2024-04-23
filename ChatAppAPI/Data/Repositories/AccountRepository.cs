@@ -60,7 +60,6 @@ namespace ChatApp.API.Data.Repositories
 
             return new ServiceResponse<AuthUserDTO>
             {
-                Data = null,
                 Success = false,
                 Message = "Something went wrong"
             };
@@ -91,7 +90,6 @@ namespace ChatApp.API.Data.Repositories
 
             return new ServiceResponse<AuthUserDTO>
             {
-                Data = null,
                 Success = false,
                 Message = "Failed to sign in"
             };
