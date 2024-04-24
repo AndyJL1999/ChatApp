@@ -1,4 +1,5 @@
-﻿using ChatApp.API.Interfaces;
+﻿using ChatApp.API.DTOs;
+using ChatApp.API.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -19,18 +20,32 @@ namespace ChatApp.API.Controllers
         }
 
         [HttpPost("CreateGroup")]
-        public async Task<IActionResult> CreateGroup(string groupName, List<string> numbers)
+        public async Task<IActionResult> CreateGroup(CreateGroupDTO createGroup)
         {
             var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            var result = await _groupRepo.CreateGroup(currentUserId, groupName, numbers);
+            var result = await _groupRepo.CreateGroup(currentUserId, createGroup.GroupName, createGroup.PhoneNumbers);
 
             if (result.Success)
             {
-                return Ok(result.Message);
+                return Ok(result.Data);
             }
 
-            return BadRequest(result.Message);
+            return BadRequest();
         }
+
+        [HttpPost("JoinGroup")]
+        public async Task<IActionResult> JoinGroup(string userId, string groupId)
+        {
+            var success = await _groupRepo.InsertUserGroup(userId, groupId);
+
+            if (success)
+            {
+                return Ok("User has joined group!");
+            }
+            
+            return BadRequest("Failed to join group");
+        }
+
     }
 }
