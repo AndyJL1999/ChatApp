@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ChatApp.UI_Library.Models
 {
-    public class AuthenticatedUser : IAuthenticatedUser
+    public interface IAuthenticatedUser
     {
         public string Name { get; set; }
         public string Email { get; set; }
