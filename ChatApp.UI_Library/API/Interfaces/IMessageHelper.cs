@@ -10,6 +10,6 @@ namespace ChatApp.UI_Library.API.Interfaces
     public interface IMessageHelper
     {
         Task<IEnumerable<MessageModel>> GetAllMessagesFromChannel(string channelId);
-        Task<string> CreateMessage(string channelId, string channelType, string content);
+        Task<MessageModel> CreateMessage(string channelId, string channelType, string content);
     }
 }

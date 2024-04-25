@@ -33,7 +33,7 @@ namespace ChatApp.UI_Library.API
             }
         }
 
-        public async Task<string> CreateMessage(string channelId, string channelType, string content)
+        public async Task<MessageModel> CreateMessage(string channelId, string channelType, string content)
         {
             var data = JsonContent.Create(new 
             {
@@ -46,7 +46,7 @@ namespace ChatApp.UI_Library.API
             {
                 if (response.IsSuccessStatusCode)
                 {
-                    return await response.Content.ReadAsStringAsync();
+                    return await response.Content.ReadFromJsonAsync<MessageModel>();
                 }
 
                 return null;
