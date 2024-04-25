@@ -10,6 +10,7 @@ namespace ChatApp.UI_Library.API
     internal class ApiHelper : IApiHelper
     {
         private readonly IConfiguration _config;
+        private HttpClient _apiClient;
 
         public ApiHelper(IConfiguration config)
         {
@@ -19,17 +20,17 @@ namespace ChatApp.UI_Library.API
         }
 
 
-        public HttpClient ApiClient { get; private set; }
+        public HttpClient ApiClient { get { return _apiClient; } }
 
         private void InitializeClient()
         {
             string api = _config.GetSection("AppSettings:ApiUrl").Value;
 
-            ApiClient = new HttpClient();
-            ApiClient.BaseAddress = new Uri(api);
-            ApiClient.DefaultRequestHeaders.Accept.Clear();
-            ApiClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            ApiClient.Timeout = TimeSpan.FromSeconds(30);
+            _apiClient = new HttpClient();
+            _apiClient.BaseAddress = new Uri(api);
+            _apiClient.DefaultRequestHeaders.Accept.Clear();
+            _apiClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            _apiClient.Timeout = TimeSpan.FromSeconds(30);
         }      
 
     }
