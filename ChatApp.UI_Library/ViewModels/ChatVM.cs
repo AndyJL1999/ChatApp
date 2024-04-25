@@ -11,6 +11,7 @@ namespace ChatApp.UI_Library.ViewModels
 {
     public class ChatVM
     {
+        public string CurrentUserId { get; set; }
         public ChannelModel Channel { get; set; }
         public RecipientModel Recipient { get; set; }
         public List<MessageModel> Messages { get; set; }
