@@ -18,7 +18,7 @@ namespace ChatApp.UI_Library.API
             _apiHelper = apiHelper;
         }
 
-        public async Task<string> UpsertChat(string number)
+        public async Task<NewChatModel> UpsertChat(string number)
         {
             var content = JsonContent.Create(number);
 
@@ -26,7 +26,7 @@ namespace ChatApp.UI_Library.API
             {
                 if (response.IsSuccessStatusCode)
                 {
-                    return await response.Content.ReadAsStringAsync();
+                    return await response.Content.ReadFromJsonAsync<NewChatModel>();
                 }
 
                 return null;

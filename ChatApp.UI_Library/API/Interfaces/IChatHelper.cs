@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ChatApp.UI_Library.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,6 @@ namespace ChatApp.UI_Library.API.Interfaces
 {
     public interface IChatHelper
     {
-        Task<string> UpsertChat(string number);
+        Task<NewChatModel> UpsertChat(string number);
     }
 }
