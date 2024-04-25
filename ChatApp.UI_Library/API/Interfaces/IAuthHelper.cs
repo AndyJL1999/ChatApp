@@ -11,6 +11,7 @@ namespace ChatApp.UI_Library.API.Interfaces
     {
         Task<AuthenticatedUser> Authenticate(string email, string password);
         Task<AuthenticatedUser> Register(string name, string email, string password, string phoneNumber);
+        Task GetUserInfo(string token);
         Task SignOut();
     }
 }
