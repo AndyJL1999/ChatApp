@@ -11,12 +11,9 @@ namespace ChatApp.UI_Library.ViewModels
     public class CreateGroupVM
     {
         [Required]
+        [StringLength(15)]
         [DisplayName("Group Name")]
         public string GroupName { get; set; }
-
-        [Phone(ErrorMessage = "Enter valid phone number")]
-        [DisplayName("Phone Number")]
-        public string PhoneNumber { get; set; }
 
         public List<string> PhoneNumbers { get; set; }
     }
