@@ -1,11 +1,32 @@
-﻿<div class="row align-items-center">
+﻿@model ChannelModel
+@{
+    var channelVM = new Dictionary<string, string>
+    {
+        {"channelId", Model.Id},
+        {"channelName", Model.Name}
+    };
+}
+
+<div class="row align-items-center">
     <img src="https://placehold.co/500x500/png" class="col-4 mb-3" style="width:30%; border-radius:50%;"/>
     <div class="container col-8 m-0 p-0">
-        <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">
-            <span class="fw-bold">UserName</span>
-            <p class="fs-6 text-truncate">
-                This is flavor text. More and more flavor text.
-            </p>
-        </a>
+        @if(Model.Type == "Chat")
+        {
+            <a class="nav-link" asp-area="UserHome" asp-controller="Chat" asp-action="Index" asp-all-route-data="channelVM">
+                <span class="fw-bold d-inline-block text-truncate w-100">@Model.Name</span>
+                <p class="fs-6 text-truncate">
+                    This is flavor text. More and more flavor text.
+                </p>
+            </a>
+        }
+        else
+        {
+            <a class="nav-link" asp-area="UserHome" asp-controller="Group" asp-action="Index" asp-all-route-data="channelVM">
+                <span class="fw-bold d-inline-block text-truncate w-100">@Model.Name</span>
+                <p class="fs-6 text-truncate">
+                    This is flavor text. More and more flavor text.
+                </p>
+            </a>
+        }
     </div>
 </div>

@@ -1,17 +1,14 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using ChatApp.UI_Library.API.Interfaces;
+using ChatApp.UI_Library.Models;
+using Microsoft.AspNetCore.Mvc;
 
 namespace ChatAppWeb.ViewComponents
 {
     public class UserChatsViewComponent : ViewComponent
     {
-        public UserChatsViewComponent()
+        public async Task<IViewComponentResult> InvokeAsync(ChannelModel channel)
         {
-
-        }
-
-        public async Task<IViewComponentResult> InvokeAsync()
-        {
-            return View();
+            return View(channel);
         }
     }
 }
