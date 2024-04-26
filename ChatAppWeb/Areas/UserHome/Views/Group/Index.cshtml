@@ -1,0 +1,84 @@
+﻿@model GroupVM
+@{
+    ViewData["Title"] = "Group";
+}
+
+<div class="container" style="margin-left: -75px;">
+    <div class="nav bg-dark text-white row position-fixed w-100" style="z-index:1; top:0;">
+        <img src="https://placehold.co/500x500/png" class="col-2 m-2 me-0" style="width:6%; border-radius:50%;"/>
+        <div class="col-10 m-1 ms-0 text-truncate">
+            <h1 class="mb-0">@Model.Channel.Name</h1>
+            @foreach(var chatter in Model.Recipients.Take(10))
+            { 
+                if(chatter != Model.Recipients.Last())
+                {
+                    <span class="mb-2">@chatter, </span> 
+                }
+                else
+                {
+                    <span class="mb-2">@chatter</span>
+                }
+            }
+        </div>
+
+    </div>
+
+    <div class="d-flex flex-column position-relative mb-5" style="margin-top:75px;" id="messagesContainer">
+        @foreach (var message in Model.Messages)
+        {
+            string containerStartSide, containerColor;
+
+            if (message.UserId != Model.CurrentUserId)
+            {
+                containerStartSide = "form-floating";
+                containerColor = "limegreen";
+
+                <div class="row align-items-center justify-content-start @containerStartSide">
+                    <div class="chat col-auto" style="background:@containerColor">
+                        @message.Content
+
+                        <span class="row ms-5 pe-2 form-floating text-black-50 justify-content-end">@message.SentAt.ToString("h:mm tt")</span>
+                    </div>
+                    <label class="ms-4 mt-1 text-decoration-underline ps-3">@message.UserName</label>
+                </div>
+
+            }
+            else
+            {
+                containerStartSide = "flex-row-reverse";
+                containerColor = "dodgerblue";
+
+                <div class="row align-items-center justify-content-start @containerStartSide">
+                    <div class="chat col-auto" style="background:@containerColor">
+                        @message.Content
+
+                        <span class="row ms-5 pe-2 form-floating text-black-50 justify-content-end">@message.SentAt.ToString("h:mm tt")</span>
+                    </div>
+                </div>
+            }
+
+            
+        }
+       
+    </div>
+
+
+    <div class="position-fixed bottom-0 w-75">
+
+        <input asp-for="@Model.CurrentUserId" id="userId" hidden />
+        <input asp-for="@Model.Channel.Id" id="channelId" hidden />
+        <input asp-for="@Model.Messages" id="messages" value="@Html.Raw(Json.Serialize(Model.Messages))" hidden />
+        <div class="row p-3 mt-4 py-2" >
+            <div class="form-floating col-11" >
+                <input class="form-control border-0 shadow bg-dark text-white" id="message"/>
+            </div>
+            <button class="btn btn-primary col-1" id="sendButton">Send</button>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script src="~/js/signalr/dist/browser/signalr.js"></script>
+    <script> const hubUrl = @Json.Serialize(@Config.GetSection("AppSettings:HubUrl").Value) </script>
+    <script src="~/js/group.js"></script>
+}
