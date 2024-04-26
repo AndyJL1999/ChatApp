@@ -3,9 +3,6 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 using ChatApp.UI_Library.API.Interfaces;
 
@@ -15,10 +12,12 @@ namespace ChatAppWeb.Areas.UserAccount.Controllers
     public class AuthController : Controller
     {
         private readonly IAuthHelper _authHelper;
+        private readonly IUserHelper _userHelper;
 
-        public AuthController(IAuthHelper authHelper)
+        public AuthController(IAuthHelper authHelper, IUserHelper userHelper)
         {
             _authHelper = authHelper;
+            _userHelper = userHelper;
         }
 
         public IActionResult Login()
@@ -27,9 +26,9 @@ namespace ChatAppWeb.Areas.UserAccount.Controllers
         }
 
         [HttpPost]
+        [AutoValidateAntiforgeryToken]
         public async Task<IActionResult> Login(LoginModel input)
         {
-
             if (ModelState.IsValid)
             {
                 var user = await _authHelper.Authenticate(input.Email, input.Password);
@@ -47,6 +46,12 @@ namespace ChatAppWeb.Areas.UserAccount.Controllers
                     var principal = new ClaimsPrincipal(identity);
 
                     await HttpContext.SignInAsync(principal);
+                    await _authHelper.GetUserInfo(user.Token);
+
+                    IEnumerable<ChannelModel> channels = await _userHelper.GetAllUserChannels();
+
+                    HttpContext.Session.Set("SessionChannelList", channels);
+                    HttpContext.Session.SetString("access_token", user.Token);
 
                     return RedirectToAction("Index", "Home", new { area = "UserHome" });
                 }
@@ -67,6 +72,7 @@ namespace ChatAppWeb.Areas.UserAccount.Controllers
         }
 
         [HttpPost]
+        [AutoValidateAntiforgeryToken]
         public async Task<IActionResult> Register(RegisterModel input)
         {
             if (ModelState.IsValid)
@@ -86,6 +92,12 @@ namespace ChatAppWeb.Areas.UserAccount.Controllers
                     var principal = new ClaimsPrincipal(identity);
 
                     await HttpContext.SignInAsync(principal);
+                    await _authHelper.GetUserInfo(user.Token);
+
+                    IEnumerable<ChannelModel> channels = await _userHelper.GetAllUserChannels();
+
+                    HttpContext.Session.Set("SessionChannelList", channels);
+                    HttpContext.Session.SetString("access_token", user.Token);
 
                     return RedirectToAction("Index", "Home", new { area = "UserHome" });
                 }
@@ -102,12 +114,21 @@ namespace ChatAppWeb.Areas.UserAccount.Controllers
         [Authorize]
         public async Task<IActionResult> LogOut()
         {
-            HttpContext.Session.Clear();
+            string? userToken = HttpContext.Session.GetString("access_token");
 
-            await _authHelper.SignOut();
+            if (string.IsNullOrEmpty(userToken) == false)
+            {
+                await _authHelper.GetUserInfo(userToken);
+
+                HttpContext.Session.Clear();
+
+                await _authHelper.SignOut();
+            }
+                
             await HttpContext.SignOutAsync();
 
             return RedirectToAction("Login");
         }
+
     }
 }
