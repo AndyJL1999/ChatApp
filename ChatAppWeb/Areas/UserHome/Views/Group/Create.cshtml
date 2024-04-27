@@ -1,4 +1,4 @@
-﻿@model GroupVM
+﻿@model CreateGroupVM
 @{
     ViewData["Title"] = "Create";
 }
@@ -12,33 +12,38 @@
         </div>
     </div>
     <div class="card-body p-4">
-        <form method="post" class="row" enctype="multipart/form-data">
+        <form method="post" class="row" enctype="multipart/form-data" id="groupForm">
 
             <div class="row">
-                <div class="col-10">
+                <div class="col-12">
                     <div class="border p-3 mt-4">
-
                         @*<div asp-validation-summary="ModelOnly"></div>*@
                         <div class="form-floating py-2 col-12">
-                            <input asp-for="PhoneNumber" class="form-control border-0 shadow"/>
-                            <label asp-for="PhoneNumber" class="ms-2"></label>
-                            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                            <input asp-for="GroupName" class="form-control border-0 shadow" maxlength="15"/>
+                            <label asp-for="GroupName" class="ms-2"></label>
+                            <span asp-validation-for="GroupName" class="text-danger"></span>
+                        </div>
+                        <div class="form-floating py-2 col-12">
+                            <input type="text" class="form-control border-0 shadow" id="phoneNumber" maxlength="16"/>
+                            <label class="ms-2">Phone Number</label>
 
-                            <button class="btn btn-primary mt-2">Add User</button>
+                            <button type="button" class="btn btn-primary mt-2" id="addNumberButton">Add User</button>
                         </div>
                         
                         <div class="overflow-auto border" style="height: 336px;">
-                            <ul class="list-group mb-4 mt-2">
-                                <li class="list-group-item border-0 border-bottom">User 1 - <span class="text-black-50">###-###-####</span></li>
-                                <li class="list-group-item border-0 border-bottom">User 2 - <span class="text-black-50">###-###-####</span></li>
-                                <li class="list-group-item border-0 border-bottom">User 3 - <span class="text-black-50">###-###-####</span></li>
+                            <ul class="list-group mb-4 mt-2" id="numberList">
+                                <input asp-for="PhoneNumbers" value="@Html.Raw(Json.Serialize(Model.PhoneNumbers))" id="numbers" hidden/>
+
+                                @* Phone numbers will be displayed like this
+                                   <li class="list-group-item border-0 border-bottom"><span class="text-black-50">@String.Format("{0:(###) ###-####}", number)</span></li>
+                                *@
                             </ul>
                         </div>
                         
 
                         <div class="row mt-2">
                             <div class="col-6 col-md-3">
-                                <button type="submit" class="btn btn-primary form-control">Create</button>   
+                                <button class="btn btn-primary form-control" id="createButton">Create</button>   
                             </div>
                             <div class="col-6 col-md-3">
                                 <a asp-area="UserHome" asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary border form-control">
@@ -56,3 +61,8 @@
         </form>
     </div>
 </div>
+
+@section Scripts{
+
+        <script src="~/js/createGroup.js"></script>
+}
