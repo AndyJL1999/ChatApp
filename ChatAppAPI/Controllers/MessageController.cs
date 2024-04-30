@@ -20,10 +20,10 @@ namespace ChatApp.API.Controllers
             _messageRepo = messageRepo;
         }
 
-        [HttpGet("GetAllMessagesFromChannel/{channelId}")]
-        public async Task<IActionResult> GetAllMessagesFromChannel(string channelId)
+        [HttpGet("GetAllMessagesFromChannel")]
+        public async Task<IActionResult> GetAllMessagesFromChannel(GetMessagesDTO messagesDTO)
         {
-            var result = await _messageRepo.GetAllFromChannel(channelId);
+            var result = await _messageRepo.GetAllFromChannel(messagesDTO.ChannelId, messagesDTO.Limit, messagesDTO.Offset);
 
             if (result.Success)
             {

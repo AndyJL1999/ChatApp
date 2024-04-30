@@ -5,7 +5,7 @@ namespace ChatApp.API.Interfaces
 {
     public interface IMessageRepository
     {
-        Task<ServiceResponse<IEnumerable<MessageDTO>>> GetAllFromChannel(string channelId);
+        Task<ServiceResponse<IEnumerable<MessageDTO>>> GetAllFromChannel(string channelId, int limit, int offset);
         Task<ServiceResponse<MessageDTO>> InsertMessage(string userId, string channelId, ChannelType channelType, string content);
     }
 }

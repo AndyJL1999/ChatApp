@@ -17,14 +17,15 @@ namespace ChatApp.API.Data.Repositories
             _userRepo = userRepo;
         }
 
-        public async Task<ServiceResponse<IEnumerable<MessageDTO>>> GetAllFromChannel(string channelId)
+        public async Task<ServiceResponse<IEnumerable<MessageDTO>>> GetAllFromChannel(string channelId, int limit, int offset)
         {
             if (string.IsNullOrEmpty(channelId) == false)
             {
-                var result = await _messageData.GetAllFromChannel(channelId);
+                var result = await _messageData.GetAllFromChannel(channelId, limit, offset);
                 List<MessageDTO> messages = new List<MessageDTO>();
 
                 result
+                    .Reverse()
                     .ToList()
                     .ForEach(m => messages.Add(new MessageDTO
                     {
