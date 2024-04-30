@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http.Json;
+using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -18,9 +19,21 @@ namespace ChatApp.UI_Library.API
             _apiHelper = apiHelper;
         }
 
-        public async Task<IEnumerable<MessageModel>> GetAllMessagesFromChannel(string channelId)
+        public async Task<IEnumerable<MessageModel>> GetAllMessagesFromChannel(string channelId, int limit, int offset)
         {
-            using (HttpResponseMessage response = await _apiHelper.ApiClient.GetAsync(_apiHelper.ApiClient.BaseAddress + $"Message/GetAllMessagesFromChannel/{channelId}"))
+            var request = new HttpRequestMessage
+            {
+                Method = HttpMethod.Get,
+                RequestUri = new Uri(_apiHelper.ApiClient.BaseAddress + "Message/GetAllMessagesFromChannel"),
+                Content = JsonContent.Create(new
+                {
+                    ChannelId = channelId,
+                    Limit = limit,
+                    Offset = offset
+                })
+            };
+
+            using (HttpResponseMessage response = await _apiHelper.ApiClient.SendAsync(request))
             {
                 if (response.IsSuccessStatusCode)
                 {
