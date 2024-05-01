@@ -1,23 +1,20 @@
-﻿const currentUserId = document.getElementById('userId').value;
+﻿const loadMore = document.getElementById('loadMoreContainer');
+const loadButton = document.getElementById('loadBtn');
+const currentUserId = document.getElementById('userId').value;
 const chatId = document.getElementById('channelId').value;
 const threadContainer = document.getElementById('messagesContainer');
 const messageInput = document.getElementById('message');
 const sendButton = document.getElementById('sendButton');
 const messageList = JSON.parse((document.getElementById('messages').value));
 
-var connection = new signalR.HubConnectionBuilder()
-    .withUrl(hubUrl).build();
-
-connection.start().catch(error => console.log(error));
+var messageCountLimit = 0;
 
 connection.on('ReceiveMessage', addMessageToChat);
 
-function sendMessageToHub(message) {
-    connection.invoke('SendMessage', message)
-        .catch(error => console.log(error));
-}
-
 $(document).ready(function () {
+    if (messageList.length >= 20)
+        loadMore.hidden = false;
+
     window.scrollTo(0, document.documentElement.scrollHeight);
 
     //Disable the send button until connection is established.
@@ -31,8 +28,26 @@ function sendMessage() {
     sendMessageToHub(message);
 }
 
-function addMessageToChat(message, sentAt) {
-    let isCurrentUserMessage = currentUserId === message.userId; 
+function addMessageToChat(message, sentAt) { 
+    createChatElement(message, sentAt, true);
+
+    messageList.push(
+        {
+            id: message.id,
+            userName: message.userName,
+            userId: message.userId,
+            content: message.content,
+            sentAt: message.sentAt
+        }
+    );
+
+    messageInput.value = '';
+
+    window.scrollTo(0, document.documentElement.scrollHeight);
+}
+
+function createChatElement(message, sentAt, isNewMessage) {
+    let isCurrentUserMessage = currentUserId === message.userId;
 
     let container = document.createElement('div');
     let contentConatiner = document.createElement('div');
@@ -50,22 +65,38 @@ function addMessageToChat(message, sentAt) {
     contentConatiner.appendChild(timeStamp);
     container.appendChild(contentConatiner);
 
-    threadContainer.appendChild(container);
-
-    messageList.push(
-        {
-            id: message.id,
-            userName: message.userName,
-            userId: message.userId,
-            content: message.content,
-            sentAt: message.sentAt
-        }
-    );
-
-    messageInput.value = '';
-
-    window.scrollTo(0, document.documentElement.scrollHeight);
+    if (isNewMessage)
+        threadContainer.appendChild(container);
+    else
+        threadContainer.insertBefore(container, threadContainer.firstChild);
 }
+
+function loadInMoreMessages() {
+    var loopList = messageList.reverse(); // Get list in descending order (earliest message to oldest)
+
+    threadContainer.removeChild(threadContainer.firstElementChild);
+    messageCountLimit = messageCountLimit + 20;
+
+    if (messageCountLimit < loopList.length) {
+        for (let i = messageCountLimit; i < messageCountLimit + 20; i++) {
+
+            if (i !== messageList.length) {
+                var timeSent = new Date(loopList[i].sentAt);
+                createChatElement(loopList[i], timeSent.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true }), false);
+            }
+            else {
+                break;
+            }
+        }
+
+        threadContainer.insertBefore(loadMore, threadContainer.firstChild);
+    }
+}
+
+loadButton.addEventListener("click", function (event) {
+    loadInMoreMessages();
+    event.preventDefault();
+});
 
 sendButton.addEventListener("click", function (event) {
     sendMessage();
