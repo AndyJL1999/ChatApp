@@ -34,12 +34,12 @@ namespace ChatAppWeb.Areas.UserHome.Controllers
             string userToken = HttpContext.Session.GetString("access_token");
             IEnumerable<MessageModel>? groupMessages;
 
-            if(HttpContext.Session.Keys.Contains(channelId) == false) // Call APi if message aren't in session
+            if(HttpContext.Session.Keys.Contains(channelId) == false) // Call APi if messages aren't in session
             {
                 if (string.IsNullOrEmpty(userToken) == false)
                     await _authHelper.GetUserInfo(userToken);
 
-                groupMessages = await _messageHelper.GetAllMessagesFromChannel(channelId);
+                groupMessages = await _messageHelper.GetAllMessagesFromChannel(channelId, 100, 0);
             }
             else
             {
