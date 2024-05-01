@@ -24,7 +24,11 @@
     </div>
 
     <div class="d-flex flex-column position-relative mb-5" style="margin-top:75px;" id="messagesContainer">
-        @foreach (var message in Model.Messages)
+        <div style="width: 100%; height: 20px; border-bottom: 1px solid black; text-align: center; margin-left: 100px;" id="loadMoreContainer" hidden>
+            <button style="font-size:20px; background-color: #F3F5F6; padding: 0 5px; border: none;" id="loadBtn">Load More</button>
+        </div>
+
+        @foreach (var message in Model.Messages.Skip(Model.Messages.Count() - 20))
         {
             string containerStartSide, containerColor;
 
@@ -80,5 +84,6 @@
 @section Scripts{
     <script src="~/js/signalr/dist/browser/signalr.js"></script>
     <script> const hubUrl = @Json.Serialize(@Config.GetSection("AppSettings:HubUrl").Value) </script>
+    <script src="~/js/connectSignalR.js"></script>
     <script src="~/js/group.js"></script>
 }
