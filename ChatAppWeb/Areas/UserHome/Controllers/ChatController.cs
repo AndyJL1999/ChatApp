@@ -44,7 +44,7 @@ namespace ChatAppWeb.Areas.UserHome.Controllers
             else
             {
                 // Get messages from session
-                chatMessages = HttpContext.Session.Get<IEnumerable<MessageModel>>(channelId);
+                chatMessages = HttpContext.Session.Get<IEnumerable<MessageModel>>(channelId).Reverse();
             }
 
             ChatVM = new ChatVM // Populate ChatVM for Chat/Index
@@ -84,6 +84,14 @@ namespace ChatAppWeb.Areas.UserHome.Controllers
             }
 
             return View(CreateChatVM);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> LoadMoreMessages([FromBody] ChannelParams parameters)
+        {
+            var newMessages = await _messageHelper.GetAllMessagesFromChannel(parameters.ChannelId, 100, parameters.Messages.Count());
+
+            return Json(new { success = true, newMessageList = newMessages.Reverse() });
         }
 
         [HttpPost]

@@ -44,7 +44,7 @@ namespace ChatAppWeb.Areas.UserHome.Controllers
             else
             {
                 // Get group messages from session
-                groupMessages = HttpContext.Session.Get<IEnumerable<MessageModel>>(channelId);
+                groupMessages = HttpContext.Session.Get<IEnumerable<MessageModel>>(channelId).Reverse();
             }
             // Get recipient names
             var recipients = groupMessages
@@ -90,6 +90,14 @@ namespace ChatAppWeb.Areas.UserHome.Controllers
             }
 
             return View(CreateGroupVM);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> LoadMoreMessages([FromBody] ChannelParams parameters)
+        {
+            var newMessages = await _messageHelper.GetAllMessagesFromChannel(parameters.ChannelId, 100, parameters.Messages.Count());
+
+            return Json(new { success = true, newMessageList = newMessages.Reverse() });
         }
 
         [HttpPost]
