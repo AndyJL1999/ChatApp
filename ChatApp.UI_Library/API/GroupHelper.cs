@@ -36,5 +36,24 @@ namespace ChatApp.UI_Library.API
                 return null;
             }
         }
+
+        public async Task<string> JoinGroup(string userId, string groupId)
+        {
+            var content = JsonContent.Create(new
+            {
+                UserId = userId,
+                GroupId = groupId
+            });
+
+            using (HttpResponseMessage response = await _apiHelper.ApiClient.PostAsync(_apiHelper.ApiClient.BaseAddress + "Group/JoinGroup", content))
+            {
+                if (response.IsSuccessStatusCode)
+                {
+                    return await response.Content.ReadAsStringAsync();
+                }
+
+                return null;
+            }
+        }
     }
 }
