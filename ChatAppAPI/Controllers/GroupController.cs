@@ -35,9 +35,9 @@ namespace ChatApp.API.Controllers
         }
 
         [HttpPost("JoinGroup")]
-        public async Task<IActionResult> JoinGroup(string userId, string groupId)
+        public async Task<IActionResult> JoinGroup(JoinGroupDTO joinGroup)
         {
-            var success = await _groupRepo.InsertUserGroup(userId, groupId);
+            var success = await _groupRepo.InsertUserGroup(joinGroup.UserId, joinGroup.GroupId);
 
             if (success)
             {
