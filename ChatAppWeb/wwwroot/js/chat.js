@@ -12,10 +12,13 @@ var messageCountLimit = 0;
 connection.on('ReceiveMessage', addMessageToChat);
 
 $(document).ready(function () {
+    messageList.reverse();
+
     if (messageList.length >= 20)
         loadMore.hidden = false;
 
-    window.scrollTo(0, document.documentElement.scrollHeight);
+    if (messageList.length <= 100)
+        window.scrollTo(0, document.documentElement.scrollHeight);
 
     //Disable the send button until connection is established.
     document.getElementById("sendButton").disabled = true;
@@ -31,7 +34,7 @@ function sendMessage() {
 function addMessageToChat(message, sentAt) { 
     createChatElement(message, sentAt, true);
 
-    messageList.push(
+    messageList.unshift(
         {
             id: message.id,
             userName: message.userName,
@@ -72,29 +75,48 @@ function createChatElement(message, sentAt, isNewMessage) {
 }
 
 function loadInMoreMessages() {
-    var loopList = messageList.reverse(); // Get list in descending order (earliest message to oldest)
+    for (let i = messageCountLimit; i < messageCountLimit + 20; i++) { // Load 20 messages at a time
 
-    threadContainer.removeChild(threadContainer.firstElementChild);
-    messageCountLimit = messageCountLimit + 20;
+        if (i !== messageList.length) { // if there is a message then display it
+            var timeSent = new Date(messageList[i].sentAt);
+            createChatElement(messageList[i], timeSent.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true }), false);
+            threadContainer.insertBefore(loadMore, threadContainer.firstChild);
+        }
+        else { 
+            break;
+        }
+    }
+    
+}
 
-    if (messageCountLimit < loopList.length) {
-        for (let i = messageCountLimit; i < messageCountLimit + 20; i++) {
+function loadMessagesFromDB() {
+    $.ajax({
+        type: "POST",
+        url: "./Chat/LoadMoreMessages",
+        data: JSON.stringify({ channelId: chatId, messages: messageList }),
+        contentType: "application/json",
+        success: function (data) {
+            if (data.success) {
+                var oldMessageCount = messageList.length;
 
-            if (i !== messageList.length) {
-                var timeSent = new Date(loopList[i].sentAt);
-                createChatElement(loopList[i], timeSent.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true }), false);
-            }
-            else {
-                break;
+                messageList.push(...data.newMessageList);
+
+                if (messageList.length !== oldMessageCount) // If messageList has changed => load new messages
+                    loadInMoreMessages();
             }
         }
-
-        threadContainer.insertBefore(loadMore, threadContainer.firstChild);
-    }
+    });
 }
 
 loadButton.addEventListener("click", function (event) {
-    loadInMoreMessages();
+    threadContainer.removeChild(threadContainer.firstElementChild);
+    messageCountLimit = messageCountLimit + 20;
+
+    if (messageCountLimit < messageList.length) {
+        loadInMoreMessages();
+    } else {
+        loadMessagesFromDB();
+    }
     event.preventDefault();
 });
 
@@ -110,8 +132,8 @@ messageInput.addEventListener("keyup", function () {
 window.onbeforeunload = function () {
     $.ajax({
         type: "POST",
-        url: "UserHome/Chat/OnLeave",
-        data: JSON.stringify({ channelId: chatId, messages: messageList }),
+        url: "./Chat/OnLeave",
+        data: JSON.stringify({ channelId: chatId, messages: messageList.slice(0, 100) }),
         contentType: "application/json; charset=utf-8",
         success: function (data) {
             if (data.success) {
