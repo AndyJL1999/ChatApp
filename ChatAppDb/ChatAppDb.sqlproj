@@ -92,5 +92,6 @@
     <Build Include="dbo\StoredProcedures\Group_Procedures\spGroup_GetGroupById.sql" />
     <Build Include="dbo\StoredProcedures\Chat_Procedures\spChat_DoesChatExist.sql" />
     <Build Include="dbo\StoredProcedures\spProcedure_GetAllChannelsForUser.sql" />
+    <Build Include="dbo\StoredProcedures\Message_Procedures\spMessage_GetLastMessageSent.sql" />
   </ItemGroup>
 </Project>
