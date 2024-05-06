@@ -9,21 +9,27 @@ namespace ChatApp.API.SignalR
     public class ChatHub : Hub
     {
         private readonly IMessageRepository _messageRepo;
+        private readonly IUserRepository _userRepo;
 
-        public ChatHub(IMessageRepository messageRepo)
+        public ChatHub(IMessageRepository messageRepo, IUserRepository userRepo)
         {
             _messageRepo = messageRepo;
+            _userRepo = userRepo;
         }
 
-        public override Task OnConnectedAsync()
+        public override async Task OnConnectedAsync()
         {
-            return base.OnConnectedAsync();
+            var httpContext = Context.GetHttpContext();
+            var channelId = httpContext.Request.Query["channelId"];
+
+            await Groups.AddToGroupAsync(Context.ConnectionId, channelId);
+
+            await base.OnConnectedAsync();
         }
 
         public async Task SendMessage(CreateMessageDTO message)
         {
             ServiceResponse<MessageDTO> messageReceived = new ServiceResponse<MessageDTO>();
-
 
             if (message.ChannelType == "Chat")
             {
@@ -39,7 +45,7 @@ namespace ChatApp.API.SignalR
                 throw new HubException($"Message could not be created: {messageReceived.Message}");
             }
 
-            await Clients.All.SendAsync("ReceiveMessage", messageReceived.Data, messageReceived.Data.SentAt.ToString("hh:mm tt"));
+            await Clients.Group(message.ChannelId).SendAsync("ReceiveMessage", messageReceived.Data, messageReceived.Data.SentAt.ToString("hh:mm tt"));
         }
     }
 }
