@@ -22,6 +22,13 @@ namespace ChatApp.DataAccess.Data
                 .LoadData<(string Id, string UserName, string UserId, string Content, DateTime SentAt), dynamic>
                 ("spMessage_GetAllFromChannel", new { ChannelId = channelId, Limit = limit, Offset = offset });
 
+        public async Task<string> GetLastMessage(string channelId)
+        {
+            var result = await _db.LoadData<string, dynamic>("spMessage_GetLastMessageSent", new { ChannelId = channelId });
+
+            return result.FirstOrDefault();
+        }
+
         public Task InsertMessage(string id, string userId, string? groupId, string? chatId, string content,
             DateTime? sentAt, DateTime? deliveredAt, DateTime? seenAt) =>
             _db.SaveData("spMessage_Insert",
