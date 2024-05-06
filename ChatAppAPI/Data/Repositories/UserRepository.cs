@@ -13,12 +13,14 @@ namespace ChatApp.API.Data.Repositories
         private readonly DatabaseContext _context;
         private readonly IUserData _userData;
         private readonly IChatData _chatData;
+        private readonly IMessageData _messageData;
 
-        public UserRepository(DatabaseContext context, IUserData userData, IChatData chatData)
+        public UserRepository(DatabaseContext context, IUserData userData, IChatData chatData, IMessageData messageData)
         {
             _context = context;
             _userData = userData;
             _chatData = chatData;
+            _messageData = messageData;
         }
 
         public async Task<ServiceResponse<IEnumerable<ChannelDTO>>> GetAllUserChannels(string userId)
@@ -30,16 +32,18 @@ namespace ChatApp.API.Data.Repositories
 
                 foreach (var channel in data)
                 {
+                    string lastMessageFromChannel = await _messageData.GetLastMessage(channel.Id);
+
                     if(channel.Type == "Chat")
                     {
                         string recipientId = await _chatData.GetRecipientFromChat(userId, channel.Id);
                         string recipientName = (await GetUserByIdAsync(recipientId)).Name;
 
-                        channels.Add(new ChannelDTO(channel.Id, recipientName, ChannelType.Chat));
+                        channels.Add(new ChannelDTO(channel.Id, recipientName, ChannelType.Chat, lastMessageFromChannel));
                     }
                     else
                     {
-                        channels.Add(new ChannelDTO(channel.Id, channel.Name, ChannelType.Group));
+                        channels.Add(new ChannelDTO(channel.Id, channel.Name, ChannelType.Group, lastMessageFromChannel));
                     }
                 }
 
