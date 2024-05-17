@@ -15,8 +15,10 @@ namespace ChatApp.UI_Library
         public static IServiceCollection AddLibraryServices(this IServiceCollection services)
         {
             return services
+                .AddMemoryCache()
                 .AddSingleton<IAuthenticatedUser, AuthenticatedUser>()
                 .AddSingleton<IApiHelper, ApiHelper>()
+                .AddScoped<ICacheService, CacheService>()
                 .AddScoped<IAuthHelper, AuthHelper>()
                 .AddScoped<IChatHelper, ChatHelper>()
                 .AddScoped<IUserHelper, UserHelper>()
