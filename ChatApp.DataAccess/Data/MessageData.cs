@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Channels;
 using System.Threading.Tasks;
 
 namespace ChatApp.DataAccess.Data
@@ -25,6 +26,13 @@ namespace ChatApp.DataAccess.Data
         public async Task<string> GetLastMessage(string channelId)
         {
             var result = await _db.LoadData<string, dynamic>("spMessage_GetLastMessageSent", new { ChannelId = channelId });
+
+            return result.FirstOrDefault();
+        }
+
+        public async Task<int> GetUnreadMessagesCountForChat(string chatId, string userId)
+        {
+            var result = await _db.LoadData<int, dynamic>("spMessage_GetUnreadChatMessagesCount", new { ChatId = chatId, UserId = userId });
 
             return result.FirstOrDefault();
         }
