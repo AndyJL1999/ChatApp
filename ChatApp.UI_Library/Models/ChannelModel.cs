@@ -11,5 +11,7 @@ namespace ChatApp.UI_Library.Models
         public string Id { get; set; }
         public string Name { get; set; }
         public string Type { get; set; }
+        public string LastMessage { get; set; }
+        public int UnreadMessagesCount { get; set; }
     }
 }
