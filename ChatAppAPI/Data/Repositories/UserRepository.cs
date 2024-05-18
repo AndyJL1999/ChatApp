@@ -38,12 +38,13 @@ namespace ChatApp.API.Data.Repositories
                     {
                         string recipientId = await _chatData.GetRecipientFromChat(userId, channel.Id);
                         string recipientName = (await GetUserByIdAsync(recipientId)).Name;
+                        int unreadMessagesCount = await _messageData.GetUnreadMessagesCountForChat(channel.Id, userId);
 
-                        channels.Add(new ChannelDTO(channel.Id, recipientName, ChannelType.Chat, lastMessageFromChannel));
+                        channels.Add(new ChannelDTO(channel.Id, recipientName, ChannelType.Chat, lastMessageFromChannel, unreadMessagesCount));
                     }
                     else
                     {
-                        channels.Add(new ChannelDTO(channel.Id, channel.Name, ChannelType.Group, lastMessageFromChannel));
+                        channels.Add(new ChannelDTO(channel.Id, channel.Name, ChannelType.Group, lastMessageFromChannel, 0));
                     }
                 }
 
