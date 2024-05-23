@@ -13,6 +13,7 @@ using Swashbuckle.AspNetCore.Filters;
 using System.Text.Json.Serialization;
 using System.Text;
 using Microsoft.EntityFrameworkCore;
+using ChatApp.API.SignalR;
 
 namespace ChatApp.API.Extensions
 {
@@ -45,6 +46,22 @@ namespace ChatApp.API.Extensions
                         ValidateIssuer = false,
                         ValidateAudience = false
                     };
+
+                    options.Events = new JwtBearerEvents
+                    {
+                        OnMessageReceived = context =>
+                        {
+                            var accessToken = context.Request.Query["access_token"];
+                            var path = context.HttpContext.Request.Path;
+
+                            if (string.IsNullOrEmpty(accessToken) == false && path.StartsWithSegments("/hubs"))
+                            {
+                                context.Token = accessToken;
+                            }
+
+                            return Task.CompletedTask;
+                        }
+                    };
                 });
 
             services.AddControllers().AddJsonOptions(o =>
@@ -66,6 +83,7 @@ namespace ChatApp.API.Extensions
                 c.OperationFilter<SecurityRequirementsOperationFilter>();
             });
 
+            services.AddSingleton<PresenceTracker>();
             services.AddSingleton<ISqlDataAccess, SqlDataAccess>();
             services.AddSingleton<IChatData, ChatData>();
             services.AddSingleton<IGroupData, GroupData>();
@@ -83,11 +101,10 @@ namespace ChatApp.API.Extensions
             {
                 options.AddPolicy("CorsPolicy",
                     builder => builder
-                    //.AllowAnyOrigin()
-                    .AllowAnyMethod()
                     .AllowAnyHeader()
+                    .AllowAnyMethod()
                     .AllowCredentials()
-                    .SetIsOriginAllowed((hosts) => true));
+                    .WithOrigins("https://localhost:7049"));
             });
 
             services.AddSignalR();

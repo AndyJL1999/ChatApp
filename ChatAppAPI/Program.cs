@@ -16,11 +16,16 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseRouting();
+
+app.UseCors("CorsPolicy");
+
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseCors("CorsPolicy");
 
 app.MapControllers();
 app.MapHub<ChatHub>("hubs/message");
+app.MapHub<PresenceHub>("hubs/presence");
+
 
 app.Run();
