@@ -26,3 +26,19 @@ html {
     margin: 20px;
     margin-right: -150px;
 }
+
+.circled-number {
+    width: 25px; /* Adjust the size of the circle */
+    height: 25px;
+    background-color: darkorange; /* Circle color */
+    border-radius: 50%; /* Make it circular */
+    display: flex; /* Center the number horizontally */
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    font-size: 12px; /* Adjust font size */
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+
+.circled-number span {
+    color: black; /* Number color */
+}

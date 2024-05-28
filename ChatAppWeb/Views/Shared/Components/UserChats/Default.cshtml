@@ -12,19 +12,49 @@
     <div class="container col-8 m-0 p-0">
         @if(Model.Type == "Chat")
         {
-            <a class="nav-link" asp-area="UserHome" asp-controller="Chat" asp-action="Index" asp-all-route-data="channelVM">
-                <span class="fw-bold d-inline-block text-truncate w-100">@Model.Name</span>
+            <a class="nav-link" onclick="saveData()" asp-area="UserHome" asp-controller="Chat" asp-action="Index" asp-all-route-data="channelVM">
+                <div class="row">
+                    <span class="fw-bold d-inline-block text-truncate w-75">@Model.Name</span>
+                    @if(Model.UnreadMessagesCount > 0)
+                    {
+                        <div class="circled-number">
+                            <span>@Model.UnreadMessagesCount</span>
+                        </div>
+                    }
+                    else if(Model.UnreadMessagesCount >= 99)
+                    {
+                        <div class="circled-number">
+                            <span>+99</span>
+                        </div>
+                    }
+                    
+                </div>
                 <p class="fs-6 text-truncate">
-                    This is flavor text. More and more flavor text.
+                    @Model.LastMessage
                 </p>
             </a>
         }
         else
         {
-            <a class="nav-link" asp-area="UserHome" asp-controller="Group" asp-action="Index" asp-all-route-data="channelVM">
-                <span class="fw-bold d-inline-block text-truncate w-100">@Model.Name</span>
+            <a class="nav-link" onclick="saveData()" asp-area="UserHome" asp-controller="Group" asp-action="Index" asp-all-route-data="channelVM">
+                <div class="row">
+                    <span class="fw-bold d-inline-block text-truncate w-75">@Model.Name</span>
+                    @if (Model.UnreadMessagesCount > 0)
+                    {
+                        <div class="circled-number">
+                            <span>@Model.UnreadMessagesCount</span>
+                        </div>
+                    }
+                    else if (Model.UnreadMessagesCount >= 99)
+                    {
+                        <div class="circled-number">
+                            <span>+99</span>
+                        </div>
+                    }
+
+                </div>
                 <p class="fs-6 text-truncate">
-                    This is flavor text. More and more flavor text.
+                    @Model.LastMessage
                 </p>
             </a>
         }
