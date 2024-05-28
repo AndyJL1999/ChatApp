@@ -1,8 +1,5 @@
 using ChatApp.UI_Library;
-using ChatApp.UI_Library.API;
-using ChatApp.UI_Library.API.Interfaces;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Rewrite;
 
 var builder = WebApplication.CreateBuilder(args);
 
