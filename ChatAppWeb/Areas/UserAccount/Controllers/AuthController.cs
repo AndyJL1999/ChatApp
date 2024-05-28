@@ -48,9 +48,9 @@ namespace ChatAppWeb.Areas.UserAccount.Controllers
                     await HttpContext.SignInAsync(principal);
                     await _authHelper.GetUserInfo(user.Token);
 
-                    IEnumerable<ChannelModel> channels = await _userHelper.GetAllUserChannels();
+                    string userId = await _userHelper.GetCurrentUserId();
 
-                    HttpContext.Session.Set("SessionChannelList", channels);
+                    HttpContext.Session.SetString("user_id", userId);
                     HttpContext.Session.SetString("access_token", user.Token);
 
                     return RedirectToAction("Index", "Home", new { area = "UserHome" });
@@ -94,9 +94,9 @@ namespace ChatAppWeb.Areas.UserAccount.Controllers
                     await HttpContext.SignInAsync(principal);
                     await _authHelper.GetUserInfo(user.Token);
 
-                    IEnumerable<ChannelModel> channels = await _userHelper.GetAllUserChannels();
+                    string userId = await _userHelper.GetCurrentUserId();
 
-                    HttpContext.Session.Set("SessionChannelList", channels);
+                    HttpContext.Session.SetString("user_id", userId);
                     HttpContext.Session.SetString("access_token", user.Token);
 
                     return RedirectToAction("Index", "Home", new { area = "UserHome" });
@@ -128,6 +128,12 @@ namespace ChatAppWeb.Areas.UserAccount.Controllers
             await HttpContext.SignOutAsync();
 
             return RedirectToAction("Login");
+        }
+
+        [HttpGet]
+        public IActionResult GetTokenForPresenceHub()
+        {
+            return Json(new { success = true, token = HttpContext.Session.GetString("access_token")});
         }
 
     }
