@@ -2,7 +2,7 @@
 
 namespace ChatAppWeb.Models
 {
-    public class ChannelParams
+    public class LoadMessagesParams
     {
         public string ChannelId { get; set; }
         public List<MessageModel> Messages { get; set; }
