@@ -47,7 +47,8 @@
 
 
     <div class="position-fixed bottom-0 w-75">
-
+        <input asp-for="@Model.Recipient" id="recipient" value="@Html.Raw(Json.Serialize(Model.Recipient))" hidden/>
+        <input asp-for="@Model.Channel.Name" id="channelName" hidden/>
         <input asp-for="@Model.CurrentUserId" id="userId" hidden />
         <input asp-for="@Model.Channel.Id" id="channelId" hidden />
         <input asp-for="@Model.Messages" id="messages" value="@Html.Raw(Json.Serialize(Model.Messages))" hidden />
@@ -62,8 +63,6 @@
 
 @section Scripts{
 
-    <script src="~/js/signalr/dist/browser/signalr.js"></script>
-    <script> const hubUrl = @Json.Serialize(@Config.GetSection("AppSettings:HubUrl").Value) </script>
     <script src="~/js/connectSignalR.js"></script>
     <script src="~/js/chat.js"></script>
 }
