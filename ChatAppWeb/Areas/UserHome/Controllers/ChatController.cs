@@ -15,45 +15,47 @@ namespace ChatAppWeb.Areas.UserHome.Controllers
         private readonly IUserHelper _userHelper;
         private readonly IMessageHelper _messageHelper;
         private readonly IAuthHelper _authHelper;
+        private readonly ICacheService _cacheService;
 
         [BindProperty]
         public CreateChatVM CreateChatVM { get; set; }
         public ChatVM ChatVM { get; set; }
 
         public ChatController(IChatHelper chatHelper, IUserHelper userHelper, 
-            IMessageHelper messageHelper, IAuthHelper authHelper)
+            IMessageHelper messageHelper, IAuthHelper authHelper, ICacheService cacheService)
         {
             _chatHelper = chatHelper;
             _userHelper = userHelper;
             _messageHelper = messageHelper;
             _authHelper = authHelper;
+            _cacheService = cacheService;
         }
 
         public async Task<IActionResult> Index(string channelId, string channelName)
         {
             string userToken = HttpContext.Session.GetString("access_token");
-            IEnumerable<MessageModel> chatMessages;
+            string userId = HttpContext.Session.GetString("user_id");
 
-            if (HttpContext.Session.Keys.Contains(channelId) == false) // Call APi if messages aren't in session
+            ChatVM chatVM = _cacheService.Get<ChatVM>(userId, channelId);
+
+            if(chatVM == null)
             {
                 if (string.IsNullOrEmpty(userToken) == false)
                     await _authHelper.GetUserInfo(userToken);
 
-                chatMessages = await _messageHelper.GetAllMessagesFromChannel(channelId, 100, 0);
-            }
-            else
-            {
-                // Get messages from session
-                chatMessages = HttpContext.Session.Get<IEnumerable<MessageModel>>(channelId).Reverse();
+                var recipient = await _userHelper.GetRecipientFromChat(channelId);
+                var chatMessages = await _messageHelper.GetAllMessagesFromChannel(channelId, 100, 0);
+
+                chatVM = new ChatVM
+                {
+                    CurrentUserId = userId,
+                    Channel = new ChannelModel { Id = channelId, Name = channelName, Type = "Chat" },
+                    Recipient = recipient,
+                    Messages = chatMessages.ToList()
+                };
             }
 
-            ChatVM = new ChatVM // Populate ChatVM for Chat/Index
-            {
-                CurrentUserId = await _userHelper.GetCurrentUserId(),
-                Channel = new ChannelModel { Id = channelId, Name = channelName, Type = "Chat" },
-                Recipient = await _userHelper.GetRecipientFromChat(channelId),
-                Messages = chatMessages.ToList()
-            };
+            ChatVM = chatVM;// Populate ChatVM for Chat/Index
 
             return View(ChatVM);
         }
@@ -87,7 +89,7 @@ namespace ChatAppWeb.Areas.UserHome.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> LoadMoreMessages([FromBody] ChannelParams parameters)
+        public async Task<IActionResult> LoadMoreMessages([FromBody] LoadMessagesParams parameters)
         {
             var newMessages = await _messageHelper.GetAllMessagesFromChannel(parameters.ChannelId, 100, parameters.Messages.Count());
 
@@ -95,15 +97,15 @@ namespace ChatAppWeb.Areas.UserHome.Controllers
         }
 
         [HttpPost]
-        public ActionResult OnLeave([FromBody] ChannelParams parameters)
+        public void OnLeave([FromBody] OnLeaveChatParams parameters)
         {
-            // When leaving a page collect all messages and store in session
+            // When leaving a page collect all messages and store in cache
             if (HttpContext.Session.IsAvailable)
             {
-                HttpContext.Session.Set(parameters.ChannelId, parameters.Messages);
+                parameters.ChatVM.Messages.Reverse();
+                _cacheService.Set(parameters.ChatVM.CurrentUserId, parameters.ChatVM.Channel.Id, parameters.ChatVM);
+                _cacheService.Set(parameters.ChatVM.CurrentUserId, "SessionChannelList", parameters.Channels);
             }
-
-            return Json(new { success = true });
         }
 
     }

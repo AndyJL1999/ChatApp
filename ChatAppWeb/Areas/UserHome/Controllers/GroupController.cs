@@ -1,4 +1,5 @@
-﻿using ChatApp.UI_Library.API.Interfaces;
+﻿using ChatApp.DataAccess.Models;
+using ChatApp.UI_Library.API.Interfaces;
 using ChatApp.UI_Library.Models;
 using ChatApp.UI_Library.ViewModels;
 using ChatAppWeb.Models;
@@ -15,50 +16,52 @@ namespace ChatAppWeb.Areas.UserHome.Controllers
         private readonly IUserHelper _userHelper;
         private readonly IGroupHelper _groupHelper;
         private readonly IAuthHelper _authHelper;
+        private readonly ICacheService _cacheService;
 
         [BindProperty]
         public CreateGroupVM CreateGroupVM { get; set; }
         public GroupVM GroupVM { get; set; }
 
         public GroupController(IMessageHelper messageHelper, IUserHelper userHelper, 
-            IGroupHelper groupHelper, IAuthHelper authHelper)
+            IGroupHelper groupHelper, IAuthHelper authHelper, ICacheService cacheService)
         {
             _messageHelper = messageHelper;
             _userHelper = userHelper;
             _groupHelper = groupHelper;
             _authHelper = authHelper;
+            _cacheService = cacheService;
         }
 
         public async Task<IActionResult> Index(string channelId, string channelName)
         {
             string userToken = HttpContext.Session.GetString("access_token");
-            IEnumerable<MessageModel>? groupMessages;
+            string userId = HttpContext.Session.GetString("user_id");
 
-            if(HttpContext.Session.Keys.Contains(channelId) == false) // Call APi if messages aren't in session
+            GroupVM groupVM = _cacheService.Get<GroupVM>(userId, channelId);
+
+            if(groupVM == null)
             {
                 if (string.IsNullOrEmpty(userToken) == false)
                     await _authHelper.GetUserInfo(userToken);
 
-                groupMessages = await _messageHelper.GetAllMessagesFromChannel(channelId, 100, 0);
-            }
-            else
-            {
-                // Get group messages from session
-                groupMessages = HttpContext.Session.Get<IEnumerable<MessageModel>>(channelId).Reverse();
-            }
-            // Get recipient names
-            var recipients = groupMessages
-                .DistinctBy(r => r.UserId)
-                .Select(r => r.UserName)
-                .ToList();
+                var groupMessages = await _messageHelper.GetAllMessagesFromChannel(channelId, 100, 0);
 
-            GroupVM = new GroupVM // Populate GroupVM for Group/Index
-            {
-                CurrentUserId =  await _userHelper.GetCurrentUserId(),
-                Channel = new ChannelModel { Id = channelId, Name = channelName, Type = "Group" },
-                Recipients = recipients,
-                Messages = groupMessages.ToList()
-            };
+                // Get recipient names
+                var recipients = groupMessages
+                    .DistinctBy(r => r.UserId)
+                    .Select(r => r.UserName)
+                    .ToList();
+
+                groupVM = new GroupVM
+                {
+                    CurrentUserId = userId,
+                    Channel = new ChannelModel { Id = channelId, Name = channelName, Type = "Chat" },
+                    Recipients = recipients,
+                    Messages = groupMessages.ToList()
+                };
+            }
+
+            GroupVM = groupVM; // Populate GroupVM for Group/Index
 
             return View(GroupVM);
         }
@@ -93,7 +96,7 @@ namespace ChatAppWeb.Areas.UserHome.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> LoadMoreMessages([FromBody] ChannelParams parameters)
+        public async Task<IActionResult> LoadMoreMessages([FromBody] LoadMessagesParams parameters)
         {
             var newMessages = await _messageHelper.GetAllMessagesFromChannel(parameters.ChannelId, 100, parameters.Messages.Count());
 
@@ -101,15 +104,15 @@ namespace ChatAppWeb.Areas.UserHome.Controllers
         }
 
         [HttpPost]
-        public ActionResult OnLeave([FromBody] ChannelParams parameters)
+        public void OnLeave([FromBody] OnLeaveGroupParams parameters)
         {
-            // When leaving a page collect all messages and store in session
+            // When leaving a page collect all messages and store in cache
             if (HttpContext.Session.IsAvailable)
             {
-                HttpContext.Session.Set(parameters.ChannelId, parameters.Messages);
+                parameters.GroupVM.Messages.Reverse();
+                _cacheService.Set(parameters.GroupVM.CurrentUserId, parameters.GroupVM.Channel.Id, parameters.GroupVM);
+                _cacheService.Set(parameters.GroupVM.CurrentUserId, "SessionChannelList", parameters.Channels);
             }
-
-            return Json(new { success = true });
         }
     }
 }
