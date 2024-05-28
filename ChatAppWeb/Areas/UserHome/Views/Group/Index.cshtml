@@ -6,7 +6,7 @@
 <div class="container" style="margin-left: -75px;">
     <div class="nav bg-dark text-white row position-fixed w-100" style="z-index:1; top:0;">
         <img src="https://placehold.co/500x500/png" class="col-2 m-2 me-0" style="width:6%; border-radius:50%;"/>
-        <div class="col-10 m-1 ms-0 text-truncate">
+        <div class="col-8 m-1 ms-0 text-truncate">
             <h1 class="mb-0">@Model.Channel.Name</h1>
             @foreach(var chatter in Model.Recipients.Take(10))
             { 
@@ -19,6 +19,22 @@
                     <span class="mb-2">@chatter</span>
                 }
             }
+
+          
+        </div>
+
+        <div class="dropdown col-2">
+             <button class="btn dropdown-toggle text-white ms-5 w-25 h-75 justify-content-center mt-2" type="button" data-bs-toggle="dropdown">
+             </button>
+
+             <ul class="dropdown-menu">
+                 <li>
+                     <a class="dropdown-item nav-link" style="cursor: pointer;" id="inviteBtn">Invite User</a>
+                 </li>
+                 <li>
+                     <a class="dropdown-item text-danger nav-link" style="cursor: pointer;">Leave Group</a>
+                 </li>
+             </ul>
         </div>
 
     </div>
@@ -68,7 +84,8 @@
 
 
     <div class="position-fixed bottom-0 w-75">
-
+        <input asp-for="@Model.Recipients" id="recipients" value="@Html.Raw(Json.Serialize(Model.Recipients))" hidden />
+        <input asp-for="@Model.Channel.Name" id="channelName" hidden/>
         <input asp-for="@Model.CurrentUserId" id="userId" hidden />
         <input asp-for="@Model.Channel.Id" id="channelId" hidden />
         <input asp-for="@Model.Messages" id="messages" value="@Html.Raw(Json.Serialize(Model.Messages))" hidden />
@@ -81,9 +98,32 @@
     </div>
 </div>
 
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Enter User Phone Number</h5>
+      </div>
+      <div class="modal-body">
+        ...
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-primary">Invite</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 @section Scripts{
-    <script src="~/js/signalr/dist/browser/signalr.js"></script>
-    <script> const hubUrl = @Json.Serialize(@Config.GetSection("AppSettings:HubUrl").Value) </script>
+
+    <script>
+        $('#inviteBtn').click(function () {
+            $('#exampleModal').modal('show');
+        });
+    </script>
+
     <script src="~/js/connectSignalR.js"></script>
     <script src="~/js/group.js"></script>
 }
