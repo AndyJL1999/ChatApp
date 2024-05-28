@@ -40,17 +40,33 @@
                                 </ul>
                             </div>
                         </div>
-                        <ul class="navbar-nav d-flex flex-column mt-1 w-100">
 
-                            @if (HttpContextAccessor.HttpContext.Session.Get<IEnumerable<ChannelModel>>("SessionChannelList") != null)
-                            {
-                                foreach (var channel in HttpContextAccessor.HttpContext.Session.Get<IEnumerable<ChannelModel>>("SessionChannelList"))
-                                {
-                                    @await Component.InvokeAsync("UserChats", new { channel })
-                                }
-                            }
+                        <!--   Script  -->
+                        <script> 
+                             const hubUrl = @Json.Serialize(@Config.GetSection("AppSettings:HubUrl").Value)
+                        </script>
+                        <script src="~/lib/jquery/dist/jquery.min.js"></script>
+                        <script src="~/js/signalr/dist/browser/signalr.js"></script>
+                        
+                         var userId = HttpContextAccessor.HttpContext.Session.GetString("user_id");
+                         var channels = await cacheService.GetOrSetAsync<IEnumerable<ChannelModel>>(userId, "SessionChannelList", userHelper.GetAllUserChannels);
+                        
+                         @if (channels != null)
+                         {
+                              <input asp-for="@channels" value="@Html.Raw(Json.Serialize(channels))" hidden id="channelList">
+                              <ul class="navbar-nav d-flex flex-column mt-1 w-100" id="channelContainer">
+                                  
+                                  @foreach (var channel in channels)
+                                  {
+                                      @await Component.InvokeAsync("UserChats", new { channel })
+                                  }
 
-                        </ul>
+                              </ul>
+
+                              
+                              <script src="~/js/presence.js"></script>
+                         }
+
                     }
                     
                 </div>

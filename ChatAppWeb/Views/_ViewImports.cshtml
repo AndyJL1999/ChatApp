@@ -1,6 +1,10 @@
-﻿@using ChatAppWeb
+﻿@using ChatApp.UI_Library.API.Interfaces
+@using ChatAppWeb
 @using ChatAppWeb.Models
 @using ChatApp.UI_Library.Models
 @using System.Text.Json
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 @inject IHttpContextAccessor HttpContextAccessor
+@inject ICacheService cacheService
+@inject IUserHelper userHelper
+@inject IConfiguration Config
