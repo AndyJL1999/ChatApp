@@ -64,6 +64,7 @@
     <Folder Include="dbo\StoredProcedures\Message_Procedures" />
     <Folder Include="dbo\StoredProcedures\Group_Procedures" />
     <Folder Include="dbo\StoredProcedures\UserGroup_Procedures" />
+    <Folder Include="dbo\StoredProcedures\Connections_Procedures" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="dbo\Tables\Chat.sql" />
@@ -94,5 +95,12 @@
     <Build Include="dbo\StoredProcedures\spProcedure_GetAllChannelsForUser.sql" />
     <Build Include="dbo\StoredProcedures\Message_Procedures\spMessage_GetLastMessageSent.sql" />
     <Build Include="dbo\StoredProcedures\Message_Procedures\spMessage_GetUnreadChatMessagesCount.sql" />
+    <Build Include="dbo\Tables\Connections.sql" />
+    <Build Include="dbo\StoredProcedures\Connections_Procedures\spConnections_Insert.sql" />
+    <Build Include="dbo\StoredProcedures\Connections_Procedures\spConnections_Delete.sql" />
+    <Build Include="dbo\StoredProcedures\Connections_Procedures\spConnections_GetConnectionsByChannel.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <RefactorLog Include="ChatAppDb.refactorlog" />
   </ItemGroup>
 </Project>
