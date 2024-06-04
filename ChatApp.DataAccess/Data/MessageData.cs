@@ -54,5 +54,12 @@ namespace ChatApp.DataAccess.Data
 
         public Task DeleteMessage(string id) =>
             _db.SaveData("spMessage_Delete", new { Id = id });
+
+        public Task InsertConnection(string connectionId, string channelId, string username) =>
+            _db.SaveData("spConnections_Insert", new { ConnectionId = connectionId, ChannelId = channelId, Username = username });
+        public Task DeleteConnection(string connectionId) =>
+            _db.SaveData("spConnections_Delete", new { ConnectionId = connectionId });
+        public Task<IEnumerable<Connection>> GetConnectionsByChannel(string channelId) =>
+            _db.LoadData<Connection, dynamic>("spConnections_GetConnectionsByChannel", new { ChannelId = channelId });
     }
 }

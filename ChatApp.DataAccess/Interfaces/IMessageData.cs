@@ -15,5 +15,8 @@ namespace ChatApp.DataAccess.Interfaces
         Task InsertMessage(string id, string userId, string? groupId, string? chatId, string content,
             DateTime? sentAt, DateTime? deliveredAt, DateTime? seenAt);
         Task DeleteMessage(string id);
+        Task InsertConnection(string connectionId, string channelId, string userame);
+        Task DeleteConnection(string connectionId);
+        Task<IEnumerable<Connection>> GetConnectionsByChannel(string channelId);
     }
 }
