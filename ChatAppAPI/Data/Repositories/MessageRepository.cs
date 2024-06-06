@@ -90,5 +90,20 @@ namespace ChatApp.API.Data.Repositories
             };
             
         }
+
+        public async Task InsertConnection(Connection connection)
+        {
+            await _messageData.InsertConnection(connection.ConnectionId, connection.ChannelId, connection.Username);
+        }
+
+        public async Task RemoveConnection(string connectionId)
+        {
+            await _messageData.DeleteConnection(connectionId);
+        }
+
+        public async Task<IEnumerable<Connection>> GetChannelConnections(string channelId)
+        {
+            return await _messageData.GetConnectionsByChannel(channelId);
+        }
     }
 }
