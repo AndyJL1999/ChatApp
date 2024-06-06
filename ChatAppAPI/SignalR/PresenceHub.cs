@@ -32,5 +32,6 @@ namespace ChatApp.API.SignalR
 
             await base.OnDisconnectedAsync(exception);
         }
+
     }
 }
