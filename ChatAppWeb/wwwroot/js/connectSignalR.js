@@ -3,7 +3,11 @@ const channelId = document.getElementById('channelId').value;
 const channelName = document.getElementById('channelName').value;
 
 var connection = new signalR.HubConnectionBuilder()
-    .withUrl(hubUrl + 'message?channelId=' + channelId)
+    .withUrl(hubUrl + 'message?channelId=' + channelId, {
+        accessTokenFactory: () => getToken().then(function (token) {
+            return token;
+        })
+    })
     .build();
 
 connection.start().catch(error => console.log(error));
