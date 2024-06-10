@@ -1,6 +1,7 @@
 ﻿const currentUserId = document.getElementById('userId').value;
-const channelId = document.getElementById('channelId').value;
 const channelName = document.getElementById('channelName').value;
+
+channelId = document.getElementById('channelId').value;
 
 var connection = new signalR.HubConnectionBuilder()
     .withUrl(hubUrl + 'message?channelId=' + channelId, {
